@@ -37,8 +37,7 @@ namespace eSchoolSemi.Data
         public DbSet<SastanakTip> _SastanakTip { get; set; }
         public DbSet<TipObavijesti> _TipObavijesti { get; set; }
         public DbSet<Ucenik> _Ucenik { get; set; }
-        public DbSet<UcenikPredmet> _UcenikPredmet { get; set; }
+        public DbSet<TipOcjene> _TipOcjene { get; set; }
         public DbSet<UpisUOdjeljenje> _UpisUOdjeljenje { get; set; }
-        public DbSet<ZakljucnaOcjena> _ZakljucnaOcjena { get; set; }
     }
 }

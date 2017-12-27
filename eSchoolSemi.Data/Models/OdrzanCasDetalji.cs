@@ -16,5 +16,7 @@ namespace eSchool.Data.Models
         public UpisUOdjeljenje UpisUOdjeljenje { get; set; }
         public int? OdrzanCasId { get; set; }
         public OdrzanCas OdrzanCas { get; set; }
+        public int? TipOcjeneId { get; set; }
+        public TipOcjene TipOcjene { get; set; }
     }
 }

@@ -13,5 +13,7 @@ namespace eSchool.Data.Models
         public string Naziv { get; set; }
         public int? SastanakTipId { get; set; }
         public SastanakTip SastanakTip { get; set; }
+        public int? OdjeljenjeId { get; set; }
+        public Odjeljenje Odjeljenje { get; set; }
     }
 }
