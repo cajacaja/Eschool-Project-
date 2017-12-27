@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace eSchoolSemi.Data.Migrations
 {
-    public partial class eSchoolSemi : Migration
+    public partial class p1701 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -89,6 +89,19 @@ namespace eSchoolSemi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "_TipOcjene",
+                columns: table => new
+                {
+                    TipOcjeneId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Tip = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__TipOcjene", x => x.TipOcjeneId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "_Korisnik",
                 columns: table => new
                 {
@@ -152,26 +165,6 @@ namespace eSchoolSemi.Data.Migrations
                         column: x => x.PredmetId,
                         principalTable: "_Predmet",
                         principalColumn: "PredmetId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_Sastanak",
-                columns: table => new
-                {
-                    SastanakId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Naziv = table.Column<string>(nullable: true),
-                    SastanakTipId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Sastanak", x => x.SastanakId);
-                    table.ForeignKey(
-                        name: "FK__Sastanak__SastanakTip_SastanakTipId",
-                        column: x => x.SastanakTipId,
-                        principalTable: "_SastanakTip",
-                        principalColumn: "SastanakTipId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -275,41 +268,6 @@ namespace eSchoolSemi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "_SastanakRoditelj",
-                columns: table => new
-                {
-                    SastanakRoditeljId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DatumSastanka = table.Column<DateTime>(nullable: false),
-                    Komentar = table.Column<string>(nullable: true),
-                    NastavnikId = table.Column<int>(nullable: true),
-                    RoditeljId = table.Column<int>(nullable: true),
-                    SastanakId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__SastanakRoditelj", x => x.SastanakRoditeljId);
-                    table.ForeignKey(
-                        name: "FK__SastanakRoditelj__Korisnik_NastavnikId",
-                        column: x => x.NastavnikId,
-                        principalTable: "_Korisnik",
-                        principalColumn: "KorisnikId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK__SastanakRoditelj__Korisnik_RoditeljId",
-                        column: x => x.RoditeljId,
-                        principalTable: "_Korisnik",
-                        principalColumn: "KorisnikId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK__SastanakRoditelj__Sastanak_SastanakId",
-                        column: x => x.SastanakId,
-                        principalTable: "_Sastanak",
-                        principalColumn: "SastanakId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "_Angazovan",
                 columns: table => new
                 {
@@ -339,6 +297,33 @@ namespace eSchoolSemi.Data.Migrations
                         column: x => x.OdjeljenjeId,
                         principalTable: "_Odjeljenje",
                         principalColumn: "OdjeljenjeId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "_Sastanak",
+                columns: table => new
+                {
+                    SastanakId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Naziv = table.Column<string>(nullable: true),
+                    OdjeljenjeId = table.Column<int>(nullable: true),
+                    SastanakTipId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Sastanak", x => x.SastanakId);
+                    table.ForeignKey(
+                        name: "FK__Sastanak__Odjeljenje_OdjeljenjeId",
+                        column: x => x.OdjeljenjeId,
+                        principalTable: "_Odjeljenje",
+                        principalColumn: "OdjeljenjeId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK__Sastanak__SastanakTip_SastanakTipId",
+                        column: x => x.SastanakTipId,
+                        principalTable: "_SastanakTip",
+                        principalColumn: "SastanakTipId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -390,32 +375,37 @@ namespace eSchoolSemi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "_UcenikPredmet",
+                name: "_SastanakRoditelj",
                 columns: table => new
                 {
-                    UcenikPredmetId = table.Column<int>(nullable: false)
+                    SastanakRoditeljId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DatumOcjenjivanja = table.Column<DateTime>(nullable: false),
-                    Napomena = table.Column<string>(nullable: true),
-                    NastavniPlanPredmetId = table.Column<int>(nullable: true),
-                    OpisOcjene = table.Column<string>(nullable: true),
-                    UpisUOdjeljenjeId = table.Column<int>(nullable: true),
-                    ZakljucniaOcjena = table.Column<int>(nullable: false)
+                    DatumSastanka = table.Column<DateTime>(nullable: false),
+                    Komentar = table.Column<string>(nullable: true),
+                    NastavnikId = table.Column<int>(nullable: true),
+                    RoditeljId = table.Column<int>(nullable: true),
+                    SastanakId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__UcenikPredmet", x => x.UcenikPredmetId);
+                    table.PrimaryKey("PK__SastanakRoditelj", x => x.SastanakRoditeljId);
                     table.ForeignKey(
-                        name: "FK__UcenikPredmet__NastavniPlanPredmet_NastavniPlanPredmetId",
-                        column: x => x.NastavniPlanPredmetId,
-                        principalTable: "_NastavniPlanPredmet",
-                        principalColumn: "NastavniPlanPredmetId",
+                        name: "FK__SastanakRoditelj__Korisnik_NastavnikId",
+                        column: x => x.NastavnikId,
+                        principalTable: "_Korisnik",
+                        principalColumn: "KorisnikId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK__UcenikPredmet__UpisUOdjeljenje_UpisUOdjeljenjeId",
-                        column: x => x.UpisUOdjeljenjeId,
-                        principalTable: "_UpisUOdjeljenje",
-                        principalColumn: "UpisUOdjeljenjeId",
+                        name: "FK__SastanakRoditelj__Korisnik_RoditeljId",
+                        column: x => x.RoditeljId,
+                        principalTable: "_Korisnik",
+                        principalColumn: "KorisnikId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK__SastanakRoditelj__Sastanak_SastanakId",
+                        column: x => x.SastanakId,
+                        principalTable: "_Sastanak",
+                        principalColumn: "SastanakId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -429,6 +419,7 @@ namespace eSchoolSemi.Data.Migrations
                     OdrzanCasId = table.Column<int>(nullable: true),
                     Odsutan = table.Column<bool>(nullable: false),
                     Opravdano = table.Column<bool>(nullable: false),
+                    TipOcjeneId = table.Column<int>(nullable: true),
                     UpisUOdjeljenjeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -441,37 +432,16 @@ namespace eSchoolSemi.Data.Migrations
                         principalColumn: "OdrzanCasId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK__OdrzanCasDetalji__TipOcjene_TipOcjeneId",
+                        column: x => x.TipOcjeneId,
+                        principalTable: "_TipOcjene",
+                        principalColumn: "TipOcjeneId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK__OdrzanCasDetalji__UpisUOdjeljenje_UpisUOdjeljenjeId",
                         column: x => x.UpisUOdjeljenjeId,
                         principalTable: "_UpisUOdjeljenje",
                         principalColumn: "UpisUOdjeljenjeId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_ZakljucnaOcjena",
-                columns: table => new
-                {
-                    ZakljucnaOcjenaid = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DadumZakljucivanja = table.Column<DateTime>(nullable: false),
-                    OdrzanCasDetaljiId = table.Column<int>(nullable: true),
-                    UcenikPredmetId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__ZakljucnaOcjena", x => x.ZakljucnaOcjenaid);
-                    table.ForeignKey(
-                        name: "FK__ZakljucnaOcjena__OdrzanCasDetalji_OdrzanCasDetaljiId",
-                        column: x => x.OdrzanCasDetaljiId,
-                        principalTable: "_OdrzanCasDetalji",
-                        principalColumn: "OdrzanCasDetaljiId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK__ZakljucnaOcjena__UcenikPredmet_UcenikPredmetId",
-                        column: x => x.UcenikPredmetId,
-                        principalTable: "_UcenikPredmet",
-                        principalColumn: "UcenikPredmetId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -561,9 +531,19 @@ namespace eSchoolSemi.Data.Migrations
                 column: "OdrzanCasId");
 
             migrationBuilder.CreateIndex(
+                name: "IX__OdrzanCasDetalji_TipOcjeneId",
+                table: "_OdrzanCasDetalji",
+                column: "TipOcjeneId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX__OdrzanCasDetalji_UpisUOdjeljenjeId",
                 table: "_OdrzanCasDetalji",
                 column: "UpisUOdjeljenjeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX__Sastanak_OdjeljenjeId",
+                table: "_Sastanak",
+                column: "OdjeljenjeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX__Sastanak_SastanakTipId",
@@ -586,16 +566,6 @@ namespace eSchoolSemi.Data.Migrations
                 column: "SastanakId");
 
             migrationBuilder.CreateIndex(
-                name: "IX__UcenikPredmet_NastavniPlanPredmetId",
-                table: "_UcenikPredmet",
-                column: "NastavniPlanPredmetId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX__UcenikPredmet_UpisUOdjeljenjeId",
-                table: "_UcenikPredmet",
-                column: "UpisUOdjeljenjeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX__UpisUOdjeljenje_OdjeljenjeId",
                 table: "_UpisUOdjeljenje",
                 column: "OdjeljenjeId");
@@ -604,16 +574,6 @@ namespace eSchoolSemi.Data.Migrations
                 name: "IX__UpisUOdjeljenje_UcenikId",
                 table: "_UpisUOdjeljenje",
                 column: "UcenikId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX__ZakljucnaOcjena_OdrzanCasDetaljiId",
-                table: "_ZakljucnaOcjena",
-                column: "OdrzanCasDetaljiId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX__ZakljucnaOcjena_UcenikPredmetId",
-                table: "_ZakljucnaOcjena",
-                column: "UcenikPredmetId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -625,34 +585,31 @@ namespace eSchoolSemi.Data.Migrations
                 name: "_Obavjestenje");
 
             migrationBuilder.DropTable(
-                name: "_SastanakRoditelj");
+                name: "_OdrzanCasDetalji");
 
             migrationBuilder.DropTable(
-                name: "_ZakljucnaOcjena");
+                name: "_SastanakRoditelj");
 
             migrationBuilder.DropTable(
                 name: "_TipObavijesti");
 
             migrationBuilder.DropTable(
-                name: "_Sastanak");
-
-            migrationBuilder.DropTable(
-                name: "_OdrzanCasDetalji");
-
-            migrationBuilder.DropTable(
-                name: "_UcenikPredmet");
-
-            migrationBuilder.DropTable(
-                name: "_SastanakTip");
-
-            migrationBuilder.DropTable(
                 name: "_OdrzanCas");
+
+            migrationBuilder.DropTable(
+                name: "_TipOcjene");
 
             migrationBuilder.DropTable(
                 name: "_UpisUOdjeljenje");
 
             migrationBuilder.DropTable(
+                name: "_Sastanak");
+
+            migrationBuilder.DropTable(
                 name: "_Angazovan");
+
+            migrationBuilder.DropTable(
+                name: "_SastanakTip");
 
             migrationBuilder.DropTable(
                 name: "_NastavniPlanPredmet");
