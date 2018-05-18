@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,4 +20,16 @@
     <ProjectReference Include="..\eSchoolSemi.Data\eSchoolSemi.Data.csproj" />
   </ItemGroup>
   <ItemGroup><DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" /></ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\AdministratorModul\Data\" />
+    <Folder Include="Areas\AdministratorModul\ViewModels\" />
+    <Folder Include="Areas\RoditeljModul\Controllers\" />
+    <Folder Include="Areas\RoditeljModul\Data\" />
+    <Folder Include="Areas\RoditeljModul\ViewModels\" />
+    <Folder Include="Areas\RoditeljModul\Views - Copy\" />
+    <Folder Include="Areas\NastavnikModul\Controllers\" />
+    <Folder Include="Areas\NastavnikModul\Data\" />
+    <Folder Include="Areas\NastavnikModul\Models\" />
+    <Folder Include="Areas\NastavnikModul\Views\" />
+  </ItemGroup>
 </Project>
