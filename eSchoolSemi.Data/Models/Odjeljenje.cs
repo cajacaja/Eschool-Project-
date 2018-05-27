@@ -15,8 +15,8 @@ namespace eSchool.Data.Models
         public int? RazrednikId { get; set; }
         public Nastavnik Razrednik { get; set; }
 
-        public int? PredstavnikId { get; set; }
-        public Ucenik Predstavnik { get; set; }
+        public int? UcenikID { get; set; }
+        public Ucenik Ucenik { get; set; }
 
         public int? NastavniPlanId { get; set; }
         public NastavniPlan NastavniPlan { get; set; }

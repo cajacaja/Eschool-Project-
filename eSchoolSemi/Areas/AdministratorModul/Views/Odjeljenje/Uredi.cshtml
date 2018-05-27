@@ -1,0 +1,37 @@
+﻿@model OdjenjenjeVM
+@{
+    ViewData["Title"] = "Uredi";
+}
+
+<h2>Uredi</h2>
+
+<form asp-action="SnimiUredjeno" class="col-md-6">
+    <div class="row">
+
+        <div class="form-group">
+            <label asp-for="Odjejlenje.OdjeljenjeId"></label>
+            <input asp-for="Odjejlenje.OdjeljenjeId" readonly class="form-control" value="@Model.Odjejlenje.OdjeljenjeId" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Odjejlenje.Oznaka"></label>
+            <input asp-for="Odjejlenje.Oznaka" class="form-control" value="@Model.Odjejlenje.Oznaka" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Odjejlenje.Kapacitet"></label>
+            <input asp-for="Odjejlenje.Kapacitet" class="form-control" value="@Model.Odjejlenje.Oznaka" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Odjejlenje.RazrednikId"></label>
+            <select asp-for="Odjejlenje.RazrednikId" asp-items="@Model.Razrednik" class="form-control"></select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Odjejlenje.UcenikID"></label>
+            <select asp-for="Odjejlenje.UcenikID" asp-items="@Model.Predstavnik" class="form-control"></select>
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Uredi</button>
+</form>

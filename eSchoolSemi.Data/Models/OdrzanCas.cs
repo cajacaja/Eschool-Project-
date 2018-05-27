@@ -11,6 +11,7 @@ namespace eSchool.Data.Models
         public int OdrzanCasId { get; set; }
         [DataType(DataType.Date)]
         public DateTime DatumOdrzavanja { get; set; }
+
         public int? AngazovanId { get; set; }
         public Angazovan Angazovan { get; set; }
     }

@@ -12,9 +12,10 @@ using System;
 namespace eSchoolSemi.Data.Migrations
 {
     [DbContext(typeof(MojContext))]
-    partial class MojContextModelSnapshot : ModelSnapshot
+    [Migration("20180521213442_RoditeljTest")]
+    partial class RoditeljTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,15 +82,13 @@ namespace eSchoolSemi.Data.Migrations
 
                     b.Property<int?>("GradId");
 
-                    b.Property<string>("Ime")
-                        .IsRequired();
+                    b.Property<string>("Ime");
 
                     b.Property<string>("KorisnickoIme");
 
                     b.Property<string>("Lozinka");
 
-                    b.Property<string>("Prezime")
-                        .IsRequired();
+                    b.Property<string>("Prezime");
 
                     b.Property<string>("Telefon");
 
@@ -197,9 +196,9 @@ namespace eSchoolSemi.Data.Migrations
 
                     b.Property<string>("Oznaka");
 
-                    b.Property<int?>("RazrednikId");
+                    b.Property<int?>("PredstavnikId");
 
-                    b.Property<int?>("UcenikID");
+                    b.Property<int?>("RazrednikId");
 
                     b.HasKey("OdjeljenjeId");
 
@@ -207,9 +206,9 @@ namespace eSchoolSemi.Data.Migrations
 
                     b.HasIndex("NastavniPlanId");
 
-                    b.HasIndex("RazrednikId");
+                    b.HasIndex("PredstavnikId");
 
-                    b.HasIndex("UcenikID");
+                    b.HasIndex("RazrednikId");
 
                     b.ToTable("_Odjeljenje");
                 });
@@ -417,7 +416,7 @@ namespace eSchoolSemi.Data.Migrations
             modelBuilder.Entity("eSchool.Data.Models.Angazovan", b =>
                 {
                     b.HasOne("eSchool.Data.Models.NastavniPlanPredmet", "NastavniPlanPredmet")
-                        .WithMany("Angazovani")
+                        .WithMany()
                         .HasForeignKey("NastavniPlanPredmetId");
 
                     b.HasOne("eSchool.Data.Models.Nastavnik", "Nastavnik")
@@ -479,13 +478,13 @@ namespace eSchoolSemi.Data.Migrations
                         .WithMany()
                         .HasForeignKey("NastavniPlanId");
 
+                    b.HasOne("eSchool.Data.Models.Ucenik", "Predstavnik")
+                        .WithMany()
+                        .HasForeignKey("PredstavnikId");
+
                     b.HasOne("eSchool.Data.Models.Nastavnik", "Razrednik")
                         .WithMany()
                         .HasForeignKey("RazrednikId");
-
-                    b.HasOne("eSchool.Data.Models.Ucenik", "Ucenik")
-                        .WithMany()
-                        .HasForeignKey("UcenikID");
                 });
 
             modelBuilder.Entity("eSchool.Data.Models.OdrzanCas", b =>

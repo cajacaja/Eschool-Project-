@@ -1,0 +1,62 @@
+﻿@model UcenikDodajVM
+@{
+    ViewData["Title"] = "UrediUcenika";
+}
+
+<h2>Uredi</h2>
+<form asp-action="UrediUcenika" method="post" class="col-md-5">
+
+    <div class="row">
+        <div class="form-group">
+            <label asp-for="Ucenik.KorisnikId">KorisnikID:</label>
+            <input asp-for="Ucenik.KorisnikId" type="text" readonly class="form-control" value="@Model.Ucenik.KorisnikId" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Ucenik.Ime"></label>
+            <input asp-for="Ucenik.Ime" type="text" class="form-control" value="@Model.Ucenik.Ime" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Ucenik.Prezime"></label>
+            <input asp-for="Ucenik.Prezime" type="text" class="form-control" value="@Model.Ucenik.Prezime" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Ucenik.Email"></label>
+            <input asp-for="Ucenik.Email" type="text" class="form-control" value="@Model.Ucenik.Email" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Ucenik.Telefon"></label>
+            <input asp-for="Ucenik.Telefon" class="form-control" value="@Model.Ucenik.Telefon" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Ucenik.GradId">Grad:</label>
+            <select asp-for="Ucenik.GradId" asp-items="@Model.Gradovi" class="form-control"></select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Ucenik.RoditeljId">Roditelj:</label>
+            <select asp-for="Ucenik.RoditeljId" asp-items="@Model.Roditleji" class="form-control">
+                <option value="@Model.Ucenik.RoditeljId"></option>
+            </select>
+        </div>       
+
+        <div class="form-group">
+            <label asp-for="Ucenik.DatumRodenja">DatumRodenja:</label>
+            <input asp-for="Ucenik.DatumRodenja"  class="form-control" value="@Model.Ucenik.DatumRodenja" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Ucenik.KorisnickoIme">Korisnicko Ime:</label>
+            <input asp-for="Ucenik.KorisnickoIme" class="form-control" value="@Model.Ucenik.KorisnickoIme" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Ucenik.Lozinka">Lozinka:</label>
+            <input asp-for="Ucenik.Lozinka" class="form-control" value="@Model.Ucenik.Lozinka" />
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Uredi</button>
+</form>

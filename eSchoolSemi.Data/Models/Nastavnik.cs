@@ -11,7 +11,9 @@ namespace eSchool.Data.Models
         public string Zvanje { get; set; }
         [DataType(DataType.Date)]
         public DateTime DatumZaposlenja { get; set; }
+
      
+
 
     }
 }

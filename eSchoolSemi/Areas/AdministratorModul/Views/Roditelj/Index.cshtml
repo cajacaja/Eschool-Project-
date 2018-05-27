@@ -1,0 +1,48 @@
+﻿@model List<Roditelj>
+@{
+    ViewData["Title"] = "Lista RODITLEJA";
+
+    // ZenCoding
+}
+<h2> Lista roditelja</h2>
+
+<a asp-action="DodajRoditelja" class="btn btn-default">Dodaj</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th>Korisnicko Ime</th>
+            <th>Lozinka</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+        <tr>
+            <td>@s.Ime @s.Prezime</td>
+            <td>@s.Email</td>
+            <td>@s.Telefon</td>
+            <td>@s.KorisnickoIme</td>
+            <td>@s.Lozinka</td>           
+            <td>
+                <form asp-action="Obrisi" method="post">
+                    <input hidden name="RoditeljID" value="@s.KorisnikId" />
+                    <button type="submit" class="btn btn-danger">Obrisi</button>
+                </form>
+                <form asp-action="Detalji" method="post">
+                    <input hidden name="RoditeljID" value="@s.KorisnikId" />
+                    <a asp-action="Detalji" asp-route-id="@s.KorisnikId" class="btn btn-info">Detalji</a>
+                </form>
+            </td>
+            <td>
+                <a asp-action="Uredi" asp-route-id="@s.KorisnikId" class="btn btn-info">Uredi</a>               
+            </td>
+        </tr>
+        }
+        </tbody>
+</table>
+

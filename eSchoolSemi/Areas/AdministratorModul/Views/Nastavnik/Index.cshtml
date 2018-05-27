@@ -1,0 +1,42 @@
+﻿@model List<Nastavnik>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+<a asp-action="DodajNastavnika" class="btn btn-default">Dodaj</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th>Zvanje</th>
+            <th>Datum zaposljenja</th>
+            <th>Akcije</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.Titula.@s.Ime @s.Prezime</td>
+                <td>@s.Email</td>
+                <td>@s.Telefon</td>
+                <td>@s.Zvanje</td>
+                <td>@s.DatumZaposlenja</td>
+                <td>
+                    <form asp-action="Obrisi" method="post">
+                        <input hidden name="NastavnikID" value="@s.KorisnikId" />
+                        <button type="submit" class="btn btn-danger">Obrisi</button>
+                    </form>
+                </td>
+                <td>
+                    <a asp-action="Uredi" asp-route-id="@s.KorisnikId" class="btn btn-info">Uredi</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

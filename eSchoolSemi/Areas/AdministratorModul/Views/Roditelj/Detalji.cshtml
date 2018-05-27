@@ -1,0 +1,28 @@
+﻿@model Roditelj
+@{
+    ViewData["Title"] = "Detalji";
+}
+
+<h2>Detalji</h2>
+
+<h3>@Model.Ime</h3> <h3>@Model.Prezime</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Ime</th>
+            <th>Prezime</th>
+        </tr>
+         
+    </thead>
+    <tbody>
+      @foreach (var item in Model.Uceniks)
+      {
+          <tr>
+            <td>@item.Ime</td>
+            <td>@item.Prezime</td>
+          </tr>
+          
+      }
+    </tbody>
+
+</table>

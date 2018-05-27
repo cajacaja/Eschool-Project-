@@ -1,0 +1,61 @@
+﻿@model NastavnikGradViewModel
+@{
+    ViewData["Title"] = "NastavnikDodaj";
+}
+
+<h2>NastavnikDodaj</h2>
+<form asp-action="DodajNastavnika" method="post">
+
+    <div class="row">
+        <div class="form-group">
+            <label asp-for="Nastavnik.Titula">Titual:</label>
+            <input asp-for="Nastavnik.Titula" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Ime">Ime:</label>
+            <input asp-for="Nastavnik.Ime" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Prezime">Prezime:</label>
+            <input asp-for="Nastavnik.Prezime" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Email">Email:</label>
+            <input asp-for="Nastavnik.Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Nastavnik.Telefon">Telefon:</label>
+            <input asp-for="Nastavnik.Telefon" class="form-control" />
+        </div>
+
+        <label asp-for="Nastavnik.GradId">Grad:</label>
+        <select asp-for="Nastavnik.GradId" class="form-control">
+            @foreach (var o in Model.Gradovi)
+        {
+
+            <option value="@o.GradId">@o.Naziv</option>
+    }
+        </select>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.DatumRodenja">DatumRodenja:</label>
+            <input asp-for="Nastavnik.DatumRodenja" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.DatumZaposlenja">DatumZaposlenja:</label>
+            <input asp-for="Nastavnik.DatumZaposlenja" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Zvanje">Zvanje:</label>
+            <input asp-for="Nastavnik.Zvanje" class="form-control" />
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj</button>
+</form>
+

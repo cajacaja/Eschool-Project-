@@ -1,0 +1,76 @@
+﻿@model UcenikDodajVM
+@{
+    ViewData["Title"] = "Dodaj ucenika!";
+}
+
+
+
+<h2>DodajUcenika</h2>
+<form asp-action="DodajUcenika" method="post" class="form-horizontal" role="form">
+
+    <div class="form-group">
+        <label asp-for="Ucenik.Ime" class="col-md-2 control-label">Ime ucenika:</label>
+        <div class="col-md-5">
+            <input asp-for="Ucenik.Ime" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Ucenik.Prezime" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Ucenik.Prezime" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Ucenik.Telefon" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Ucenik.Telefon" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Ucenik.Email" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Ucenik.Email" class="form-control" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="Ucenik.Prezime" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Ucenik.DatumRodenja" type="date" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Ucenik.RoditeljId" class="col-md-2 control-label">Odjeljenje</label>
+        <div class="col-md-5">
+            <select asp-for="Ucenik.RoditeljId" asp-items="@Model.Roditleji" class="form-control"></select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="OdjeljenjeID" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <select asp-for="OdjeljenjeID" asp-items="@Model.Odjeljenja" class="form-control"></select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BrojUDnevniku" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="BrojUDnevniku" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Ucenik.GradId" class="col-md-2 control-label">Odjeljenje</label>
+        <div class="col-md-5">
+            <select asp-for="Ucenik.GradId" asp-items="@Model.Gradovi" class="form-control"></select>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-danger col-md-3 col-md-offset-3">Dodaj ucenika!</button>
+</form>

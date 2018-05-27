@@ -1,0 +1,59 @@
+﻿@model RoditeljDodajViewModel
+@{
+    ViewData["Title"] = "Uredi";
+}
+
+<h2>Uredi</h2>
+<form asp-action="UrediRoditelja" method="post">
+
+    <div class="row">
+        <div class="form-group">
+            <label asp-for="Roditelj.KorisnikId">RoditeljID:</label>
+            <input asp-for="Roditelj.KorisnikId" type="text" readonly class="form-control" value="@Model.Roditelj.KorisnikId" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Roditelj.Ime">Ime:</label>
+            <input asp-for="Roditelj.Ime" type="text" class="form-control" value="@Model.Roditelj.Ime" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Roditelj.Prezime">Prezime:</label>
+            <input asp-for="Roditelj.Prezime" type="text" class="form-control" value="@Model.Roditelj.Prezime" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Roditelj.Email">Email:</label>
+            <input asp-for="Roditelj.Email" type="text" class="form-control" value="@Model.Roditelj.Email" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Roditelj.Telefon">Telefon:</label>
+            <input asp-for="Roditelj.Telefon" class="form-control" value="@Model.Roditelj.Telefon" />
+        </div>
+
+         <label asp-for="Roditelj.GradId">Grad:</label>
+        <select asp-for="Roditelj.GradId" class="form-control">
+            @foreach (var o in Model.Gradovi)
+            {
+
+                <option value="@o.GradId">@o.Naziv</option>
+            }
+        </select>
+
+        <div class="form-group">
+            <label asp-for="Roditelj.DatumRodenja">DatumRodenja:</label>
+            <input asp-for="Roditelj.DatumRodenja" type="date" class="form-control" value="@Model.Roditelj.DatumRodenja" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Roditelj.KorisnickoIme">KorisnickoIme:</label>
+            <input asp-for="Roditelj.KorisnickoIme" class="form-control" value="@Model.Roditelj.KorisnickoIme" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Roditelj.Lozinka">Lozinka:</label>
+            <input asp-for="Roditelj.Lozinka" class="form-control" value="@Model.Roditelj.Lozinka" />
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Uredi</button>
+</form>

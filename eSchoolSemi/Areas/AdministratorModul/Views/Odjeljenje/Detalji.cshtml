@@ -1,0 +1,66 @@
+﻿@model OdjenjenjeVM
+@{
+    ViewData["Title"] = "Detalji";
+}
+
+<h2>Detalji</h2>
+
+<form class="form-inline">
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label asp-for="Odjejlenje.Oznaka">Razred:</label>
+            <input asp-for="Odjejlenje.Oznaka" readonly class="form-control" />
+        </div>
+
+        <div class="form-group col-md-3">
+            <label asp-for="Odjejlenje.Kapacitet">Kapacitet:</label>
+            <input asp-for="Odjejlenje.Kapacitet" readonly class="form-control" />
+        </div>
+
+        <div class="form-group col-md-3">
+            @foreach (var item in Model.Razrednik)
+        {
+            if (Model.Odjejlenje.RazrednikId.ToString() == item.Value)
+            {
+                <label asp-for="Odjejlenje.Razrednik">Razrednik:</label>
+                <input asp-for="@item.Text" readonly class="form-control" />
+
+        }
+    }
+        </div>
+
+
+        <div class="form-group col-md-3">
+            @foreach (var item in Model.Predstavnik)
+        {
+            if (Model.Odjejlenje.UcenikID.ToString() == item.Value)
+            {
+                <label asp-for="Odjejlenje.Ucenik">Predstavnik:</label>
+                <input asp-for="@item.Text" readonly class="form-control" />
+
+        }
+    }
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Naziv</td>
+            
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Predstavnik)
+        {
+            <tr>
+                <td>@item.Text</td>
+           </tr>
+        }
+
+    </tbody>
+</table>
+
+

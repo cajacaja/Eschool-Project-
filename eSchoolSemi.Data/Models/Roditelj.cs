@@ -7,6 +7,6 @@ namespace eSchool.Data.Models
 {
     public class Roditelj:Korisnik
     {
-            
+            public List<Ucenik> Uceniks { get; set; }
     }
 }

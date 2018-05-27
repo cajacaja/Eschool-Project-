@@ -1,0 +1,51 @@
+﻿@model RoditeljDodajViewModel
+@{
+    ViewData["Title"] = "RoditeljDodaj";
+}
+
+<h2>RoditeljDodaj</h2>
+<form asp-action="DodajRoditelja" method="post">
+  
+    <div class="row">
+        <div class="form-group">
+            <label asp-for="Roditelj.Ime">Ime:</label>
+            
+                <input asp-for="Roditelj.Ime" class="form-control" />
+                <span asp-validation-for="Roditelj.Ime" class="text-danger"></span>
+            
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Roditelj.Prezime">Prezime:</label>
+            <input asp-for="Roditelj.Prezime" class="form-control" />
+            <span asp-validation-for="Roditelj.Prezime" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Roditelj.Email">Email:</label>
+            <input asp-for="Roditelj.Email" class="form-control" />
+            <span asp-validation-for="Roditelj.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Roditelj.Telefon">Telefon:</label>
+            <input asp-for="Roditelj.Telefon" class="form-control" />
+            <span asp-validation-for="Roditelj.Telefon" class="text-danger"></span>
+        </div>
+
+        <label asp-for="Roditelj.GradId">Grad:</label>
+        <select asp-for="Roditelj.GradId" class="form-control">
+            @foreach (var o in Model.Gradovi)
+            {
+
+                <option value="@o.GradId">@o.Naziv</option>
+            }
+        </select>
+
+        <div class="form-group">
+            <label asp-for="Roditelj.DatumRodenja">DatumRodenja:</label>
+            <input asp-for="Roditelj.DatumRodenja" class="form-control" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj</button>
+</form>
+

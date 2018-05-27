@@ -1,0 +1,29 @@
+﻿@model OdjenjenjeVM
+@{
+    ViewData["Title"] = "Odjelenje";
+}
+
+<h2>Odjelenje</h2>
+
+<form asp-action="Snimi" method="post" class="col-md-5">
+    <div class="row">
+        <div class="form-group">
+            <label asp-for="Odjejlenje.Oznaka" class="col-md-2 control-label">Oznaka</label>
+
+            <input asp-for="Odjejlenje.Oznaka" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Odjejlenje.Kapacitet" class="col-md-2 control-label">Kapacitet</label>
+            <input asp-for="Odjejlenje.Kapacitet" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Odjejlenje.RazrednikId" class="col-md-2 control-label">Razrednik</label>
+            <select asp-for="Odjejlenje.RazrednikId" asp-items="@Model.Razrednik" class="form-control"></select>
+        </div>
+    </div>
+    
+
+    <button type="submit" class="btn btn-danger col-md-3 col-md-offset-3"   >Dodaj odjeljenje!</button>
+</form>

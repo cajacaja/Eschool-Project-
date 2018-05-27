@@ -1,0 +1,75 @@
+﻿@model NastavnikGradViewModel
+@{
+    ViewData["Title"] = "Uredi";
+}
+
+<h2>Uredi</h2>
+<form asp-action="UrediNastavnika" method="post">
+
+    <div class="row">
+        <div class="form-group">
+            <label asp-for="Nastavnik.KorisnikId">NastavnikID:</label>
+            <input asp-for="Nastavnik.KorisnikId" type="text" readonly class="form-control" value="@Model.Nastavnik.KorisnikId" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Titula">Titual:</label>
+            <input asp-for="Nastavnik.Titula" class="form-control"  value="@Model.Nastavnik.Titula"/>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Ime">Ime:</label>
+            <input asp-for="Nastavnik.Ime" type="text" class="form-control" value="@Model.Nastavnik.Ime" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Prezime">Prezime:</label>
+            <input asp-for="Nastavnik.Prezime" type="text" class="form-control" value="@Model.Nastavnik.Prezime" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Email">Email:</label>
+            <input asp-for="Nastavnik.Email" type="text" class="form-control" value="@Model.Nastavnik.Email" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Nastavnik.Telefon">Telefon:</label>
+            <input asp-for="Nastavnik.Telefon" class="form-control" value="@Model.Nastavnik.Telefon" />
+        </div>
+
+        <label asp-for="Nastavnik.GradId">Grad:</label>
+        <select asp-for="Nastavnik.GradId" class="form-control">
+            @foreach (var o in Model.Gradovi)
+        {
+
+            <option value="@o.GradId">@o.Naziv</option>
+    }
+        </select>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.DatumRodenja">DatumRodenja:</label>
+            <input asp-for="Nastavnik.DatumRodenja" type="date" class="form-control" value="@Model.Nastavnik.DatumRodenja" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.DatumZaposlenja">DatumZaposlenja:</label>
+            <input asp-for="Nastavnik.DatumZaposlenja" class="form-control" value=@Model.Nastavnik.DatumZaposlenja />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Zvanje">Zvanje:</label>
+            <input asp-for="Nastavnik.Zvanje" class="form-control" value=@Model.Nastavnik.Zvanje/>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.KorisnickoIme">KorisnickoIme:</label>
+            <input asp-for="Nastavnik.KorisnickoIme" class="form-control" value="@Model.Nastavnik.KorisnickoIme" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nastavnik.Lozinka">Lozinka:</label>
+            <input asp-for="Nastavnik.Lozinka" class="form-control" value="@Model.Nastavnik.Lozinka" />
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Uredi</button>
+</form>

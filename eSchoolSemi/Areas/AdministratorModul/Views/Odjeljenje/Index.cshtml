@@ -1,0 +1,33 @@
+﻿@model List<Odjeljenje>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3>Lista odjeljenja</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>Oznaka</td>
+            <td>Kpacitet</td>
+            <td>Razrednik</td>
+            <td>Akcija</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Oznaka</td>
+            <td>@item.Kapacitet</td>
+            <td>@item.RazrednikId</td>
+            <td>
+                <a asp-action="Uredi" asp-route-id="@item.OdjeljenjeId">Uredi</a>
+                <a asp-action="Obrisi" asp-route-OdjeljenjeID="@item.OdjeljenjeId">Obrisi</a>
+                <a asp-action="Detalji" asp-route-id="@item.OdjeljenjeId">Detalji</a>
+            </td>
+        </tr>
+        }
+        
+    </tbody>
+</table>
+
