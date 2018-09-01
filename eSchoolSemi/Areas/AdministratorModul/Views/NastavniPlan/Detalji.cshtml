@@ -1,0 +1,37 @@
+﻿@model ListaPredmetaNastavniPlanVM
+@{
+    ViewData["Title"] = "Detalji";
+}
+
+<h2>@Model.Naziv</h2>
+
+
+<table  class="table table-bordered">
+   <thead>
+       <tr>
+           <th>Predmeti</th>
+           <th>Akcija</th>
+       </tr>
+   </thead>
+
+    <tbody>
+        @foreach (var item in Model.Npp)
+        {
+            foreach (var obj in Model.Predmeti)
+            {
+                if (item.PredmetId.ToString()==obj.Value)
+                {
+                    <tr>
+                        <td>@obj.Text</td>
+                        <td><a asp-action="AnagazujNastavnika" asp-route-nastavniPlanPredmetID="@item.NastavniPlanPredmetId" class="btn btn-danger" >Angazuj</a></td>
+                        <td><a asp-action="ObrisiPredmetIzNPP" asp-route-nastavniPlanProgramID="@item.NastavniPlanPredmetId" class="btn btn-danger">Obrisi predmet</a></td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+

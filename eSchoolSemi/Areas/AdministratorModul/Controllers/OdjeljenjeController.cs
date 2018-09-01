@@ -35,7 +35,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         {
             OdjenjenjeVM odjeljenjeUredi = new OdjenjenjeVM();
 
-            odjeljenjeUredi.Odjejlenje = _context._Odjeljenje.Where(x=>x.OdjeljenjeId== id).FirstOrDefault();
+            odjeljenjeUredi.Odjejlenje = _context._Odjeljenje.Where(x => x.OdjeljenjeId == id).FirstOrDefault();
             GetDefaultVM(odjeljenjeUredi);
 
             List<UpisUOdjeljenje> upisi = _context._UpisUOdjeljenje.Where(x => x.OdjeljenjeId == id).ToList();
@@ -46,10 +46,15 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
                 ucenici.Add(_context._Ucenik.Where(x => x.KorisnikId == item.UcenikId).FirstOrDefault());
             }
 
-             odjeljenjeUredi.Predstavnik = ucenici.Select(x => new SelectListItem
-            { Value=x.KorisnikId.ToString(),Text=x.Ime+" "+x.Prezime }).ToList();
-          
+            odjeljenjeUredi.Predstavnik = ucenici.Select(x => new SelectListItem
+            { Value = x.KorisnikId.ToString(), Text = x.Ime + " " + x.Prezime }).ToList();
 
+
+            odjeljenjeUredi.NastavniPlan = _context._NastavniPlan.Select(x => new SelectListItem
+            {
+                Value = x.NastavniPlanId.ToString(),
+                Text = x.Naziv
+            }).ToList();
 
 
             return View(odjeljenjeUredi);
@@ -101,6 +106,15 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
                 Value = x.KorisnikId.ToString(),
                 Text = x.Ime + " " + x.Prezime
             }).ToList();
+
+            if (vm.NastavniPlan==null)
+            {
+                vm.NastavniPlan = _context._NastavniPlan.Select(x => new SelectListItem
+                {
+                    Value = x.NastavniPlanId.ToString(),
+                    Text = x.Naziv
+                }).ToList();
+            }
             
             return vm;
         }

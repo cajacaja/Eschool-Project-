@@ -1,0 +1,17 @@
+﻿@model NastavniPlan
+@{
+    ViewData["Title"] = "DodajNastavniPlan";
+}
+
+<h2>DodajNastavniPlan</h2>
+
+<form asp-action="DodajNastavniPlan" method="post" class="col-md-5">
+    <div class="row">
+        <div class="form-group">
+            <label asp-for="Naziv"></label>
+            <input asp-for="Naziv" class="form-control" />
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-danger">Dodaj!</button>
+</form>

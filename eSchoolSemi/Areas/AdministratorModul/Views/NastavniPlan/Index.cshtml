@@ -1,0 +1,32 @@
+﻿@model List<NastavniPlan>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Svi Predmeti!</h2>
+
+<table class="table table-bordered">
+<thead>
+    <tr>        
+        <td>Naziv</td>
+        <td>Akcija</td>
+
+    </tr>
+</thead>
+<tbody>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            
+            <td>@item.Naziv</td> 
+            <td><a asp-action="Detalji" asp-route-nastavniPlanId="@item.NastavniPlanId">Detalji</a><p>/</p><a asp-action="ObrisiNastavniPlan" asp-route-nastavniPlanId="@item.NastavniPlanId">Obrisi</a></td>
+
+        </tr>
+
+    }
+</tbody>
+</table>
+<a asp-action="DodajPredmet" class="btn btn-default">Dodaj predmet!</a>
+<a asp-action="DodajNastavniPlan" class="btn btn-default">Dodaj nastavni plan!</a>
+<a asp-controller="NastavniPlanPredmet" asp-action="DodajPlanPredmet" class="btn btn-default">Dodaj predmet u nastavni plan!</a>

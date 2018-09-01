@@ -15,9 +15,12 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
         public Odjeljenje Odjejlenje { get; set; }
 
         public string PredstavnikOdabrani { get; set; }
+
         public List<SelectListItem> Predstavnik { get; set; }
 
         public List<SelectListItem> Razrednik { get; set; }
+
+        public List<SelectListItem> NastavniPlan { get; set; }
 
     }
 }

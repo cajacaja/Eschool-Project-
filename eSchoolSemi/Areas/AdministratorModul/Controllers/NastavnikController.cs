@@ -22,6 +22,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             return View(nav);
         }
 
+
         public IActionResult DodajNastavnika()
         {
             NastavnikGradViewModel vm = new NastavnikGradViewModel();
@@ -86,5 +87,18 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             return RedirectToAction("Index");
 
         }
+
+        //public IActionResult Angazuj(int nastavnikID)
+        //{
+        //    Angazovan angazujNastavnika = new Angazovan {NastavnikId=nastavnikID};
+
+        //   return View(angazujNastavnika);
+        //}
+
+        //public IActionResult DodajAngazman()
+        //{
+
+
+        //}
     }
 }
