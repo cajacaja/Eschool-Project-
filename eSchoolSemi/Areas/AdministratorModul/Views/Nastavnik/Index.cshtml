@@ -1,4 +1,4 @@
-﻿@model List<Nastavnik>
+﻿@model NastavnikIndexVM
 @{
     ViewData["Title"] = "Index";
 }
@@ -9,34 +9,35 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Naziv</th>
-            <th>Email</th>
-            <th>Telefon</th>
+            <th>Ime i prezime</th>
+            <th>Titula</th>
             <th>Zvanje</th>
             <th>Datum zaposljenja</th>
-            <th>Akcije</th>
+            <th>Username</th>
+            <th>Password</th>
             
         </tr>
     </thead>
     <tbody>
-        @foreach (var s in Model)
+        @foreach (var s in Model.Nastavnici)
         {
-            <tr>
-                <td>@s.Titula.@s.Ime @s.Prezime</td>
-                <td>@s.Email</td>
-                <td>@s.Telefon</td>
-                <td>@s.Zvanje</td>
-                <td>@s.DatumZaposlenja</td>
-                <td>
-                    <form asp-action="Obrisi" method="post">
-                        <input hidden name="NastavnikID" value="@s.KorisnikId" />
-                        <button type="submit" class="btn btn-danger">Obrisi</button>
-                    </form>
-                </td>
-                <td>
-                    <a asp-action="Uredi" asp-route-id="@s.KorisnikId" class="btn btn-info">Uredi</a>
-                </td>
-            </tr>
+        <tr>
+            <td>@s.ImePrezime</td>
+            <td>@s.Titula</td>
+            <td>@s.Zvanje</td>
+            <td>@s.DatumZaposljenja</td>
+            <td>@s.Username</td>
+            <td>@s.Password</td>
+            <td>
+                <form asp-action="Obrisi" method="post">
+                    <input hidden name="NastavnikID" value="@s.NastavniID" />
+                    <button type="submit" class="btn btn-danger">Obrisi</button>
+                </form>
+            </td>
+            <td>
+                <a asp-action="Uredi" asp-route-id="@s.NastavniID" class="btn btn-info">Uredi</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

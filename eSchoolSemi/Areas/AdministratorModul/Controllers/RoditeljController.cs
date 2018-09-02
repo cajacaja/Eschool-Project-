@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using eSchool.Data.Models;
 using eSchoolSemi.Data;
+using eSchoolSemi.Data.Models;
 using eSchoolSemi.Web.Areas.AdministratorModul.ViewModels;
+using eSchoolSemi.Web.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 {
 
     [Area("AdministratorModul")]
+    [Autorizacija(false, false, false, true)]
     public class RoditeljController : Controller
     {
         private MojContext _context;
@@ -20,6 +23,8 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         //Dodat ViewModel da se vidie i gradovi
         public IActionResult Index()
         {
+            
+
             List<Roditelj> model = _context._Roditelj.ToList();
             return View("Index", model);
         }

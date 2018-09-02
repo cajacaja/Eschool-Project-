@@ -1,0 +1,59 @@
+﻿@model AdministratorDodajVM
+@{
+    ViewData["Title"] = "Dodaj";
+}
+
+<h2>Dodaj</h2>
+
+<form asp-action="Snimi" method="post">
+
+    <div class="row">
+        <div class="form-group">
+            <label asp-for="Ime"></label>
+            <input asp-for="Ime" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Prezime">Ime:</label>
+            <input asp-for="Prezime" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Telefon">Telefon:</label>
+            <input asp-for="Telefon" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email">Email:</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DatumRodjenja">DatumRodjenja:</label>
+            <input asp-for="DatumRodjenja" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="GradID">Mjesto rodjenja:</label>
+            <select asp-for="GradID" class="form-control">
+                @foreach (var item in Model.Gradovi)
+            {
+                <option value="@item.Value">@item.Text</option>
+        }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Username">Username:</label>
+            <input asp-for="Username" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password">Password:</label>
+            <input asp-for="Password" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-danger">Dodaj</button>
+
+    </div>
+</form>

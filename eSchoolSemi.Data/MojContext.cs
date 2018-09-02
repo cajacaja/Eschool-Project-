@@ -1,4 +1,5 @@
 ﻿using eSchool.Data.Models;
+using eSchoolSemi.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -39,5 +40,12 @@ namespace eSchoolSemi.Data
         public DbSet<Ucenik> _Ucenik { get; set; }
         public DbSet<TipOcjene> _TipOcjene { get; set; }
         public DbSet<UpisUOdjeljenje> _UpisUOdjeljenje { get; set; }
+
+        public DbSet<KorisnickiNalog> korisnickiNalogs { get; set; }
+
+        public DbSet<Administrator> Administrators { get; set; }
+
+        public DbSet<AutorizacijskiToken> AutorizacijskiToken { get; set; }
+
     }
 }

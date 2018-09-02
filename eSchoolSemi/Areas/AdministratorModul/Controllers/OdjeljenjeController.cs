@@ -4,13 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using eSchool.Data.Models;
 using eSchoolSemi.Data;
+using eSchoolSemi.Data.Models;
 using eSchoolSemi.Web.Areas.AdministratorModul.ViewModels;
+using eSchoolSemi.Web.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 {
     [Area("AdministratorModul")]
+    [Autorizacija(false, false, false, true)]
     public class OdjeljenjeController : Controller
     {
 
@@ -19,6 +22,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         public IActionResult Index()
         {
+            
             List<Odjeljenje> novi = _context._Odjeljenje.ToList();
             return View(novi);
         }

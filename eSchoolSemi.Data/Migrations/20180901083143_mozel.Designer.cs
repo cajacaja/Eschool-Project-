@@ -12,9 +12,10 @@ using System;
 namespace eSchoolSemi.Data.Migrations
 {
     [DbContext(typeof(MojContext))]
-    partial class MojContextModelSnapshot : ModelSnapshot
+    [Migration("20180901083143_mozel")]
+    partial class mozel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,8 +85,6 @@ namespace eSchoolSemi.Data.Migrations
                     b.Property<string>("Ime")
                         .IsRequired();
 
-                    b.Property<int>("KorisnickiNalogID");
-
                     b.Property<string>("KorisnickoIme");
 
                     b.Property<string>("Lozinka");
@@ -98,8 +97,6 @@ namespace eSchoolSemi.Data.Migrations
                     b.HasKey("KorisnikId");
 
                     b.HasIndex("GradId");
-
-                    b.HasIndex("KorisnickiNalogID");
 
                     b.ToTable("_Korisnik");
 
@@ -378,24 +375,6 @@ namespace eSchoolSemi.Data.Migrations
                     b.ToTable("_UpisUOdjeljenje");
                 });
 
-            modelBuilder.Entity("eSchoolSemi.Data.Models.AutorizacijskiToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("KorisnickiNalogID");
-
-                    b.Property<string>("Vrijednost");
-
-                    b.Property<DateTime>("VrijemeEvidentiranja");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KorisnickiNalogID");
-
-                    b.ToTable("AutorizacijskiToken");
-                });
-
             modelBuilder.Entity("eSchoolSemi.Data.Models.KorisnickiNalog", b =>
                 {
                     b.Property<int>("KorisnickiNalogID")
@@ -482,11 +461,6 @@ namespace eSchoolSemi.Data.Migrations
                     b.HasOne("eSchool.Data.Models.Grad", "MjestoRodenja")
                         .WithMany()
                         .HasForeignKey("GradId");
-
-                    b.HasOne("eSchoolSemi.Data.Models.KorisnickiNalog", "KorisnickiNalog")
-                        .WithMany()
-                        .HasForeignKey("KorisnickiNalogID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("eSchool.Data.Models.Materijal", b =>
@@ -598,14 +572,6 @@ namespace eSchoolSemi.Data.Migrations
                     b.HasOne("eSchool.Data.Models.Ucenik", "Ucenik")
                         .WithMany()
                         .HasForeignKey("UcenikId");
-                });
-
-            modelBuilder.Entity("eSchoolSemi.Data.Models.AutorizacijskiToken", b =>
-                {
-                    b.HasOne("eSchoolSemi.Data.Models.KorisnickiNalog", "KorisnickiNalog")
-                        .WithMany()
-                        .HasForeignKey("KorisnickiNalogID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("eSchool.Data.Models.Ucenik", b =>

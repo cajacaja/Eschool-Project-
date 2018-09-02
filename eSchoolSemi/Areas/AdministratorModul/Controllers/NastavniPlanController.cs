@@ -4,7 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using eSchool.Data.Models;
 using eSchoolSemi.Data;
+using eSchoolSemi.Data.Models;
 using eSchoolSemi.Web.Areas.AdministratorModul.ViewModels;
+using eSchoolSemi.Web.Helper;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 {
     [Area("AdministratorModul")]
+    [Autorizacija(false, false, false, true)]
     public class NastavniPlanController : Controller
     {
         private MojContext _context;
@@ -19,6 +23,8 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         public IActionResult Index()
         {
+           
+
             List<NastavniPlan> lista = _context._NastavniPlan.ToList();
             return View(lista);
         }

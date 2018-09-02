@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using eSchoolSemi;
-
+using eSchoolSemi.Data.Models;
 
 namespace eSchool.Data.Models
 {
@@ -28,5 +28,8 @@ namespace eSchool.Data.Models
         public string  Telefon { get; set; }
         public Grad MjestoRodenja { get; set; }
         public int? GradId { get; set; }
+
+        public int KorisnickiNalogID { get; set; }
+        public KorisnickiNalog KorisnickiNalog { get; set; }
     }
 }
