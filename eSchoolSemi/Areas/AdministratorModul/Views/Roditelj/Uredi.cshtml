@@ -7,51 +7,51 @@
 <form asp-action="UrediRoditelja" method="post">
 
     <div class="row">
-        <div class="form-group">
-            <label asp-for="Roditelj.KorisnikId">RoditeljID:</label>
-            <input asp-for="Roditelj.KorisnikId" type="text" readonly class="form-control" value="@Model.Roditelj.KorisnikId" />
+        <div class="form-group" style="display:none">
+            <label asp-for="RoditeljID">RoditeljID:</label>
+            <input asp-for="RoditeljID" type="text" readonly class="form-control" value="@Model.RoditeljID" />
         </div>
         <div class="form-group">
-            <label asp-for="Roditelj.Ime">Ime:</label>
-            <input asp-for="Roditelj.Ime" type="text" class="form-control" value="@Model.Roditelj.Ime" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Roditelj.Prezime">Prezime:</label>
-            <input asp-for="Roditelj.Prezime" type="text" class="form-control" value="@Model.Roditelj.Prezime" />
+            <label asp-for="Ime">Ime:</label>
+            <input asp-for="Ime" type="text" class="form-control" value="@Model.Ime" />
         </div>
 
         <div class="form-group">
-            <label asp-for="Roditelj.Email">Email:</label>
-            <input asp-for="Roditelj.Email" type="text" class="form-control" value="@Model.Roditelj.Email" />
-        </div>
-        <div class="form-group">
-            <label asp-for="Roditelj.Telefon">Telefon:</label>
-            <input asp-for="Roditelj.Telefon" class="form-control" value="@Model.Roditelj.Telefon" />
+            <label asp-for="Prezime">Prezime:</label>
+            <input asp-for="Prezime" type="text" class="form-control" value="@Model.Prezime" />
         </div>
 
-         <label asp-for="Roditelj.GradId">Grad:</label>
-        <select asp-for="Roditelj.GradId" class="form-control">
+        <div class="form-group">
+            <label asp-for="Email">Email:</label>
+            <input asp-for="Email" type="text" class="form-control" value="@Model.Email" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Telefon">Telefon:</label>
+            <input asp-for="Telefon" class="form-control" value="@Model.Telefon" />
+        </div>
+
+         <label asp-for="GradID">Grad:</label>
+        <select asp-for="GradID" class="form-control">
             @foreach (var o in Model.Gradovi)
             {
 
-                <option value="@o.GradId">@o.Naziv</option>
+                <option value="@o.Value">@o.Text</option>
             }
         </select>
 
         <div class="form-group">
-            <label asp-for="Roditelj.DatumRodenja">DatumRodenja:</label>
-            <input asp-for="Roditelj.DatumRodenja" type="date" class="form-control" value="@Model.Roditelj.DatumRodenja" />
+            <label asp-for="DatumRodjenja">DatumRodenja:</label>
+            <input asp-for="DatumRodjenja" type="date" class="form-control" value="@Model.DatumRodjenja" />
         </div>
 
         <div class="form-group">
-            <label asp-for="Roditelj.KorisnickoIme">KorisnickoIme:</label>
-            <input asp-for="Roditelj.KorisnickoIme" class="form-control" value="@Model.Roditelj.KorisnickoIme" />
+            <label asp-for="Username">KorisnickoIme:</label>
+            <input asp-for="Username" class="form-control" value="@Model.Username" />
         </div>
 
         <div class="form-group">
-            <label asp-for="Roditelj.Lozinka">Lozinka:</label>
-            <input asp-for="Roditelj.Lozinka" class="form-control" value="@Model.Roditelj.Lozinka" />
+            <label asp-for="Password">Lozinka:</label>
+            <input asp-for="Password" class="form-control" value="@Model.Password" />
         </div>
 
     </div>

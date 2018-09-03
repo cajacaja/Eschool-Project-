@@ -23,12 +23,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         public IActionResult Index()
         {
-            KorisnickiNalog korisnik = HttpContext.GetLogiraniKorisnik();
-            if (korisnik==null)
-            {
-                TempData["error_poruka"] = "Nemate pravo pristupa!";
-                return RedirectToAction("Index", "Autentifikacija", new { area = "" });
-            }
+           
 
             AdministratorIndexVM admini = new AdministratorIndexVM {
 

@@ -38,7 +38,7 @@ namespace eSchoolSemi.Web.Controllers
             }
 
             Administrator prijavaA = _context.Administrators.FirstOrDefault(x => x.KorisnickiNalogID == korisnik.KorisnickiNalogID);
-            
+
 
             Nastavnik prijavaN = _context._Nastavnik.FirstOrDefault(x => x.KorisnickiNalogID == korisnik.KorisnickiNalogID);
             

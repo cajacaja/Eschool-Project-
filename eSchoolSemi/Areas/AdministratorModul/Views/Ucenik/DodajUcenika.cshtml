@@ -9,45 +9,59 @@
 <form asp-action="DodajUcenika" method="post" class="form-horizontal" role="form">
 
     <div class="form-group">
-        <label asp-for="Ucenik.Ime" class="col-md-2 control-label">Ime ucenika:</label>
+        <label asp-for="Ime" class="col-md-2 control-label">Ime ucenika:</label>
         <div class="col-md-5">
-            <input asp-for="Ucenik.Ime" class="form-control" />
+            <input asp-for="Ime" class="form-control" />
         </div>
     </div>
 
     <div class="form-group">
-        <label asp-for="Ucenik.Prezime" class="col-md-2 control-label"></label>
+        <label asp-for="Prezime" class="col-md-2 control-label"></label>
         <div class="col-md-5">
-            <input asp-for="Ucenik.Prezime" class="form-control" />
+            <input asp-for="Prezime" class="form-control" />
         </div>
     </div>
 
     <div class="form-group">
-        <label asp-for="Ucenik.Telefon" class="col-md-2 control-label"></label>
+        <label asp-for="Username" class="col-md-2 control-label"></label>
         <div class="col-md-5">
-            <input asp-for="Ucenik.Telefon" class="form-control" />
+            <input asp-for="Username"  class="form-control" />
         </div>
     </div>
 
     <div class="form-group">
-        <label asp-for="Ucenik.Email" class="col-md-2 control-label"></label>
+        <label asp-for="Password" class="col-md-2 control-label"></label>
         <div class="col-md-5">
-            <input asp-for="Ucenik.Email" class="form-control" />
+            <input asp-for="Password"  class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Telefon" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Telefon" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email" class="col-md-2 control-label"></label>
+        <div class="col-md-5">
+            <input asp-for="Email" class="form-control" />
         </div>
     </div>
 
 
     <div class="form-group">
-        <label asp-for="Ucenik.Prezime" class="col-md-2 control-label"></label>
+        <label asp-for="DatumRodjenja" class="col-md-2 control-label"></label>
         <div class="col-md-5">
-            <input asp-for="Ucenik.DatumRodenja" type="date" class="form-control" />
+            <input asp-for="DatumRodjenja" type="date" class="form-control" />
         </div>
     </div>
 
     <div class="form-group">
-        <label asp-for="Ucenik.RoditeljId" class="col-md-2 control-label">Odjeljenje</label>
+        <label asp-for="RoditeljID" class="col-md-2 control-label">Odjeljenje</label>
         <div class="col-md-5">
-            <select asp-for="Ucenik.RoditeljId" asp-items="@Model.Roditleji" class="form-control"></select>
+            <select asp-for="RoditeljID" asp-items="@Model.Roditleji" class="form-control"></select>
         </div>
     </div>
 
@@ -66,9 +80,9 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Ucenik.GradId" class="col-md-2 control-label">Odjeljenje</label>
+        <label asp-for="GradID" class="col-md-2 control-label">Odjeljenje</label>
         <div class="col-md-5">
-            <select asp-for="Ucenik.GradId" asp-items="@Model.Gradovi" class="form-control"></select>
+            <select asp-for="GradID" asp-items="@Model.Gradovi" class="form-control"></select>
         </div>
     </div>
 

@@ -17,6 +17,7 @@
             <th>Korisnicko Ime</th>
             <th>Lozinka</th>
             <th>Akcije</th>
+            <th>Grad</th>
         </tr>
     </thead>
     <tbody>
@@ -27,7 +28,8 @@
             <td>@s.Email</td>
             <td>@s.Telefon</td>
             <td>@s.KorisnickoIme</td>
-            <td>@s.Lozinka</td>           
+            <td>@s.Lozinka</td> 
+            <td>@s.MjestoRodenja.Naziv</td>
             <td>
                 <form asp-action="Obrisi" method="post">
                     <input hidden name="RoditeljID" value="@s.KorisnikId" />

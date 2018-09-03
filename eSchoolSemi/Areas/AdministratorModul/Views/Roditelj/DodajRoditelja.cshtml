@@ -8,43 +8,53 @@
   
     <div class="row">
         <div class="form-group">
-            <label asp-for="Roditelj.Ime">Ime:</label>
-            
-                <input asp-for="Roditelj.Ime" class="form-control" />
-                <span asp-validation-for="Roditelj.Ime" class="text-danger"></span>
-            
+            <label asp-for="Ime">Ime:</label>
+            <input asp-for="Ime" class="form-control" />
+            <span asp-validation-for="Ime" class="text-danger"></span>
+
         </div>
 
         <div class="form-group">
-            <label asp-for="Roditelj.Prezime">Prezime:</label>
-            <input asp-for="Roditelj.Prezime" class="form-control" />
-            <span asp-validation-for="Roditelj.Prezime" class="text-danger"></span>
+            <label asp-for="Prezime">Prezime:</label>
+            <input asp-for="Prezime" class="form-control" />
+            <span asp-validation-for="Prezime" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Roditelj.Email">Email:</label>
-            <input asp-for="Roditelj.Email" class="form-control" />
-            <span asp-validation-for="Roditelj.Email" class="text-danger"></span>
+            <label asp-for="Email">Email:</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Roditelj.Telefon">Telefon:</label>
-            <input asp-for="Roditelj.Telefon" class="form-control" />
-            <span asp-validation-for="Roditelj.Telefon" class="text-danger"></span>
+            <label asp-for="Telefon">Telefon:</label>
+            <input asp-for="Telefon" class="form-control" />
+            <span asp-validation-for="Telefon" class="text-danger"></span>
         </div>
 
-        <label asp-for="Roditelj.GradId">Grad:</label>
-        <select asp-for="Roditelj.GradId" class="form-control">
+        <label asp-for="GradID">Grad:</label>
+        <select asp-for="GradID" class="form-control">
             @foreach (var o in Model.Gradovi)
-            {
+        {
 
-                <option value="@o.GradId">@o.Naziv</option>
-            }
+            <option value="@o.Value">@o.Text</option>
+    }
         </select>
 
         <div class="form-group">
-            <label asp-for="Roditelj.DatumRodenja">DatumRodenja:</label>
-            <input asp-for="Roditelj.DatumRodenja" class="form-control" />
+            <label asp-for="DatumRodjenja">DatumRodenja:</label>
+            <input asp-for="DatumRodjenja" class="form-control" />
         </div>
+
+        <div class="form-group">
+            <label asp-for="Username">Username:</label>
+            <input asp-for="Username" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password">Password:</label>
+            <input asp-for="Password" class="form-control" />
+        </div>
+
     </div>
     <button type="submit" class="btn btn-primary">Dodaj</button>
 </form>

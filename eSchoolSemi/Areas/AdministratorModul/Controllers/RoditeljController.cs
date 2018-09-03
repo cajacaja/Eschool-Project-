@@ -8,6 +8,7 @@ using eSchoolSemi.Data.Models;
 using eSchoolSemi.Web.Areas.AdministratorModul.ViewModels;
 using eSchoolSemi.Web.Helper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
@@ -25,34 +26,59 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         {
             
 
-            List<Roditelj> model = _context._Roditelj.ToList();
+            List<Roditelj> model = _context._Roditelj.Include(x=>x.MjestoRodenja).ToList();
             return View("Index", model);
         }
 
         #region DodavanjeRoditelja
         public IActionResult DodajRoditelja()
         {
-            RoditeljDodajViewModel vm = new RoditeljDodajViewModel();
+            RoditeljDodajViewModel vm = new RoditeljDodajViewModel {
 
-            return View("DodajRoditelja",GetDefaultVM(vm));
+                Gradovi=_context._Grad.Select(x=>new SelectListItem {
+
+                    Value=x.GradId.ToString(),
+                    Text=x.Naziv
+                }).ToList()
+            };
+
+            return View("DodajRoditelja",vm);
         }
 
 
         [HttpPost]
         public IActionResult DodajRoditelja(RoditeljDodajViewModel vm)
         {
-           
 
-        
-            if (!ModelState.IsValid)
+            KorisnickiNalog korisnicki = new KorisnickiNalog
+            {
+                Username=vm.Username,
+                Password=vm.Password,
+                Zapamti=false
+            };
+
+            _context.korisnickiNalogs.Add(korisnicki);
+            _context.SaveChanges();
+
+            Roditelj noviRoditelj = new Roditelj
             {
 
-                return View(GetDefaultVM(vm));
-            }
-            vm.Roditelj.KorisnickoIme=vm.Roditelj.Ime+"."+vm.Roditelj.Prezime;
-            vm.Roditelj.Lozinka = vm.Roditelj.Prezime + vm.Roditelj.Ime + vm.Roditelj.DatumRodenja.Year.ToString();
-            _context._Roditelj.Add(vm.Roditelj);
+                Ime = vm.Ime,
+                Prezime = vm.Prezime,
+                Telefon = vm.Telefon,
+                Email = vm.Email,
+                GradId = vm.GradID,
+                KorisnickoIme = vm.Username,
+                Lozinka = vm.Password,
+                KorisnickiNalogID = _context.korisnickiNalogs.FirstOrDefault(x => x.Username == vm.Username && x.Password == vm.Password).KorisnickiNalogID,
+                DatumRodenja = vm.DatumRodjenja
+
+            };
+
+            _context._Roditelj.Add(noviRoditelj);
             _context.SaveChanges();
+        
+           
 
             
             return RedirectToAction(nameof(Index));
@@ -60,21 +86,17 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         }
 
 
-        private RoditeljDodajViewModel GetDefaultVM(RoditeljDodajViewModel vm)
-        {
-            if (vm.Roditelj == null)
-                vm.Roditelj = new Roditelj();
-
-            if (vm.Gradovi == null)
-                vm.Gradovi = _context._Grad.ToList();
-
-            return vm;
-        }
+       
         #endregion
 
         public IActionResult Obrisi(int RoditeljID)
         {
-            _context._Roditelj.Remove(_context._Roditelj.Find(RoditeljID));
+            Roditelj izbrisi = _context._Roditelj.FirstOrDefault(x => x.KorisnikId == RoditeljID);
+            KorisnickiNalog korisnicki = _context.korisnickiNalogs.FirstOrDefault(x => x.KorisnickiNalogID == izbrisi.KorisnickiNalogID);
+
+            _context.korisnickiNalogs.Remove(korisnicki);
+            
+            _context._Roditelj.Remove(izbrisi);
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
@@ -84,11 +106,25 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             if (id == null)
                 return NotFound();
 
-            RoditeljDodajViewModel novi = new RoditeljDodajViewModel();
+            Roditelj urediRoditelj = _context._Roditelj.FirstOrDefault(x => x.KorisnikId == id);
 
-            Roditelj korisnik = _context._Roditelj.Where(x => x.KorisnikId == id).FirstOrDefault();
-            novi.Roditelj = korisnik;
-            novi.Gradovi = _context._Grad.ToList();
+            RoditeljDodajViewModel novi = new RoditeljDodajViewModel
+            {
+
+                Ime= urediRoditelj.Ime,
+                Prezime = urediRoditelj.Prezime,
+                DatumRodjenja = urediRoditelj.DatumRodenja,
+                Email = urediRoditelj.Email,
+                Telefon = urediRoditelj.Telefon,
+                GradID = urediRoditelj.GradId,
+                Gradovi=_context._Grad.Select(x=>new SelectListItem {Value=x.GradId.ToString(),Text=x.Naziv }).ToList(),
+                Username = urediRoditelj.KorisnickoIme,
+                Password = urediRoditelj.Lozinka,
+                RoditeljID=urediRoditelj.KorisnikId
+
+            };
+
+            
 
             return View(novi);
 
@@ -96,14 +132,39 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         public IActionResult UrediRoditelja(RoditeljDodajViewModel vm)
         {
+
+            Roditelj noviRoditelj = _context._Roditelj.FirstOrDefault(X => X.KorisnikId == vm.RoditeljID);
+
+            KorisnickiNalog korisnik = _context.korisnickiNalogs.Where(x => x.KorisnickiNalogID == noviRoditelj.KorisnickiNalogID).FirstOrDefault();
+
+            if (korisnik.Username!=vm.Username || korisnik.Password!=vm.Password)
+            {
+                korisnik.Password = vm.Password;
+                korisnik.Username = vm.Username;
+
+                _context.Update(korisnik);
+            }
+
+
+            noviRoditelj.Ime = vm.Ime;
+            noviRoditelj.Prezime = vm.Prezime;
+            noviRoditelj.Telefon = vm.Telefon;
+            noviRoditelj.Email = vm.Email;
+            noviRoditelj.GradId = vm.GradID;
+            noviRoditelj.KorisnickoIme = vm.Username;
+            noviRoditelj.Lozinka = vm.Password;
+            noviRoditelj.DatumRodenja = vm.DatumRodjenja;
+
             
-            _context.Update(vm.Roditelj);
+
+            _context.Update(noviRoditelj);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
 
         }
 
+        //TrebaDodaradit
         public IActionResult Detalji(int? id)
         {
             Roditelj novi = _context._Roditelj.Where(s => s.KorisnikId == id).FirstOrDefault();
@@ -112,12 +173,12 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         }
 
-        public IActionResult ProvjeriTelefon(Roditelj roditelj)
-        {
-            if (_context._Korisnik.Any(x => x.Telefon == roditelj.Telefon))
-                return Json($"Broj{roditelj.Telefon} je zauzet!");
-            return Json(true);
-        }
+        //public IActionResult ProvjeriTelefon(Roditelj roditelj)
+        //{
+        //    if (_context._Korisnik.Any(x => x.Telefon == roditelj.Telefon))
+        //        return Json($"Broj{roditelj.Telefon} je zauzet!");
+        //    return Json(true);
+        //}
 
        
     }

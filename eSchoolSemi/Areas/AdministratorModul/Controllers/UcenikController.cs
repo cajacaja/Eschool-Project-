@@ -40,25 +40,56 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         public IActionResult DodajUcenika(UcenikDodajVM vm)
         {
 
+            KorisnickiNalog korisnicki = new KorisnickiNalog
+            {
+                Username = vm.Username,
+                Password = vm.Password,
+                Zapamti = false
+            };
 
-            vm.Ucenik.KorisnickoIme = vm.Ucenik.Ime + "." + vm.Ucenik.Prezime;
-            vm.Ucenik.KorisnickoIme = vm.Ucenik.Ime + "." + vm.Ucenik.Prezime + vm.Ucenik.DatumRodenja.Month.ToString() + vm.Ucenik.DatumRodenja.Day.ToString();
-            _context._Ucenik.Add(vm.Ucenik);
+            _context.korisnickiNalogs.Add(korisnicki);
             _context.SaveChanges();
 
-            UpisUOdjeljenje upisNovi = new UpisUOdjeljenje
+            Ucenik noviUcenik = new Ucenik
             {
-                UcenikId=vm.Ucenik.KorisnikId,
-                OdjeljenjeId=vm.OdjeljenjeID,
-                BrojUDnevniku=vm.BrojUDnevniku
-                
-                
+
+                Ime = vm.Ime,
+                Prezime = vm.Prezime,
+                Telefon = vm.Telefon,
+                Email = vm.Email,
+                GradId = vm.GradID,
+                KorisnickoIme = vm.Username,
+                Lozinka = vm.Password,
+                KorisnickiNalogID = _context.korisnickiNalogs.FirstOrDefault(x => x.Username == vm.Username && x.Password == vm.Password).KorisnickiNalogID,
+                DatumRodenja = vm.DatumRodjenja,
+                RoditeljId=vm.RoditeljID,
+                Vladanje="Primjerno"
+               
+
             };
+           
+            _context._Ucenik.Add(noviUcenik);
+            _context.SaveChanges();
+
+            if (vm.OdjeljenjeID != null)
+            {
+                UpisUOdjeljenje upisNovi = new UpisUOdjeljenje
+                {
+                    UcenikId = noviUcenik.KorisnikId,
+                    OdjeljenjeId = vm.OdjeljenjeID,
+                    BrojUDnevniku = vm.BrojUDnevniku
+
+
+                };
+
+                _context._UpisUOdjeljenje.Add(upisNovi);
+                _context.SaveChanges();
+            }
+           
 
            
 
-            _context._UpisUOdjeljenje.Add(upisNovi);
-            _context.SaveChanges();
+            
 
 
            
@@ -72,11 +103,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         public UcenikDodajVM GetDefaultVM(UcenikDodajVM vm)
         {
 
-            
-            if (vm.Ucenik==null)
-            {
-                vm.Ucenik = new Ucenik { Vladanje = "Primjerno" };
-            }
+         
 
             if (vm.Gradovi==null)
             {
@@ -110,7 +137,14 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         public IActionResult Obrisi(int UcenikID)
         {
-            _context._Ucenik.Remove(_context._Ucenik.Find(UcenikID));
+
+
+            Ucenik izbrisi = _context._Ucenik.FirstOrDefault(x => x.KorisnikId == UcenikID);
+            KorisnickiNalog korisnicki = _context.korisnickiNalogs.FirstOrDefault(x => x.KorisnickiNalogID == izbrisi.KorisnickiNalogID);
+
+            _context.korisnickiNalogs.Remove(korisnicki);
+
+            _context._Ucenik.Remove(izbrisi);
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
@@ -120,23 +154,69 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             if (id == null)
                 return NotFound();
 
-            UcenikDodajVM novi = new UcenikDodajVM();
+            
 
             //novi.Ucenik = _context._Ucenik.Where(x => x.KorisnikId == id).FirstOrDefault();
-            novi.Ucenik = _context._Ucenik.FirstOrDefault(u => u.KorisnikId == id);
-            GetDefaultVM(novi);
-           
+            //novi.Ucenik = _context._Ucenik.FirstOrDefault(u => u.KorisnikId == id);
+            //GetDefaultVM(novi);
 
-            return View(novi);
+            Ucenik urediUcenik = _context._Ucenik.FirstOrDefault(x => x.KorisnikId == id);
+
+            UcenikDodajVM novi = new UcenikDodajVM
+            {
+
+                Ime = urediUcenik.Ime,
+                Prezime = urediUcenik.Prezime,
+                DatumRodjenja = urediUcenik.DatumRodenja,
+                Email = urediUcenik.Email,
+                Telefon = urediUcenik.Telefon,
+                GradID = urediUcenik.GradId,              
+                Username = urediUcenik.KorisnickoIme,
+                Password = urediUcenik.Lozinka,
+                RoditeljID = urediUcenik.RoditeljId,
+                UcenikID=urediUcenik.KorisnikId
+                
+
+            };
+
+            
+
+
+
+            return View(GetDefaultVM(novi));
 
         }
 
         public IActionResult UrediUcenika(UcenikDodajVM vm)
         {
+            Ucenik noviUcenik = _context._Ucenik.FirstOrDefault(X => X.KorisnikId == vm.UcenikID);
+
+            KorisnickiNalog korisnik = _context.korisnickiNalogs.Where(x => x.KorisnickiNalogID == noviUcenik.KorisnickiNalogID).FirstOrDefault();
+
+            if (korisnik.Username != vm.Username || korisnik.Password != vm.Password)
+            {
+                korisnik.Password = vm.Password;
+                korisnik.Username = vm.Username;
+
+                _context.Update(korisnik);
+            }
+
+
+            noviUcenik.Ime = vm.Ime;
+            noviUcenik.Prezime = vm.Prezime;
+            noviUcenik.Telefon = vm.Telefon;
+            noviUcenik.Email = vm.Email;
+            noviUcenik.GradId = vm.GradID;
+            noviUcenik.KorisnickoIme = vm.Username;
+            noviUcenik.Lozinka = vm.Password;
+            noviUcenik.DatumRodenja = vm.DatumRodjenja;
+            noviUcenik.RoditeljId = vm.RoditeljID;
             
-            _context.Update(vm.Ucenik);
+
+            _context.Update(noviUcenik);
             _context.SaveChanges();
-                       
+
+
             return RedirectToAction("Index");
 
         }
