@@ -10,9 +10,10 @@ namespace eSchool.Data.Models
         [Key]
         public int NastavniPlanPredmetId { get; set; }
 
-        public string Sifra { get; set; }
+       
         public string GodinaStudiranja { get; set; }
-        public int BrojSati { get; set; }
+        public int BrojCasova { get; set; }
+        
 
         public int? NastavniPlanId { get; set; }
         public NastavniPlan NastavniPlan { get; set; }
@@ -20,6 +21,6 @@ namespace eSchool.Data.Models
         public int? PredmetId { get; set; }
         public Predmet Predmet { get; set; }
 
-        public List<Angazovan> Angazovani { get; set; }
+      
     }
 }

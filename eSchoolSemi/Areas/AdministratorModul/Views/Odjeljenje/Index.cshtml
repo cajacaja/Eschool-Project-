@@ -1,29 +1,35 @@
-﻿@model List<Odjeljenje>
+﻿
+@model OdjeljenjeIndexVM
 @{
     ViewData["Title"] = "Index";
 }
 
-<h3>Lista odjeljenja</h3>
+<h3 class="text-center">Lista odjeljenja</h3>
+<br />
+<a asp-action="DodajOdjeljenje" class="btn btn-info">Dodaj odjeljenje</a>
+<br />
 <table class="table table-bordered">
     <thead>
         <tr>
             <td>Oznaka</td>
             <td>Kpacitet</td>
             <td>Razrednik</td>
+            <td>Predstavnik</td>
             <td>Akcija</td>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Odjeljenja)
         {
         <tr>
-            <td>@item.Oznaka</td>
+            <td>@item.Oznka</td>
             <td>@item.Kapacitet</td>
-            <td>@item.RazrednikId</td>
+            <td>@item.Razrednik</td>
+            <td>@((item.Predstavnik == null) ? "Nema predstavnika":item.Predstavnik)</td>
             <td>
-                <a asp-action="Uredi" asp-route-id="@item.OdjeljenjeId">Uredi</a>
-                <a asp-action="Obrisi" asp-route-OdjeljenjeID="@item.OdjeljenjeId">Obrisi</a>
-                <a asp-action="Detalji" asp-route-id="@item.OdjeljenjeId">Detalji</a>
+                <a asp-action="Uredi" asp-route-id="@item.OdjeljenjeID">Uredi</a>
+                <a asp-action="Obrisi" asp-route-OdjeljenjeID="@item.OdjeljenjeID">Obrisi</a>
+                <a asp-action="Detalji" asp-route-id="@item.OdjeljenjeID">Detalji</a>
             </td>
         </tr>
         }

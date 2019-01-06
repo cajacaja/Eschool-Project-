@@ -11,7 +11,8 @@ namespace eSchool.Data.Models
         public int OdrzanCasDetaljiId { get; set; }
         public bool Odsutan { get; set; }
         public bool Opravdano { get; set; }
-        public int Ocjena { get; set; }
+
+        public int? Ocjena { get; set; }
 
         public int? UpisUOdjeljenjeId { get; set; }
         public UpisUOdjeljenje UpisUOdjeljenje { get; set; }
@@ -19,7 +20,6 @@ namespace eSchool.Data.Models
         public int? OdrzanCasId { get; set; }
         public OdrzanCas OdrzanCas { get; set; }
 
-        public int? TipOcjeneId { get; set; }
-        public TipOcjene TipOcjene { get; set; }
+        
     }
 }

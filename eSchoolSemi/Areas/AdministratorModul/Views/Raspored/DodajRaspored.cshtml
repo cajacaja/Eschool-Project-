@@ -1,0 +1,28 @@
+﻿@model RasporedDodajVM
+@{
+    ViewData["Title"] = "DodajRaspored";
+}
+
+<h2 class="text-center">Dodaj Raspored</h2>
+
+<form asp-action="SnimiRaspored" method="post">
+
+    <div class="row">
+        <div class="form-group col-md-6 col-md-push-3">
+            <label asp-for="RasporedNaziv">Naziv rasporeda:</label>
+            <input asp-for="RasporedNaziv" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6 col-md-push-3">
+            <label asp-for="OdljenjeID">Odjeljenje</label>
+            <select asp-for="OdljenjeID" asp-items="@Model.Odjeljenja" class="form-control">
+                <option value="">Izaberi odjeljenje...</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-md-push-5">
+        <button type="submit" class="btn btn-default">Dodaj ucenika!</button>
+    </div>
+</form>

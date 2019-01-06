@@ -26,8 +26,42 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         {
             
 
-            List<Roditelj> model = _context._Roditelj.Include(x=>x.MjestoRodenja).ToList();
-            return View("Index", model);
+            
+            return View();
+        }
+
+        public async Task<IActionResult> tabelaRoditelji(string sortOrder,string search,int? page) {
+
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "ime_desc" : "";
+
+            var Roditelji = _context._Roditelj.Include(x => x.MjestoRodenja).ToList();
+            IQueryable<Roditelj> ListRoditelja = from x in _context._Roditelj
+                                                 from s in _context._Grad
+                                                 where x.GradId == s.GradId
+                                                 select new Roditelj { KorisnikId = x.KorisnikId, Email = x.Email, Telefon = x.Telefon,
+                                                                       KorisnickoIme = x.KorisnickoIme,Lozinka=x.Lozinka,Ime=x.Ime,Prezime=x.Prezime,
+                                                                       GradId =x.GradId,MjestoRodenja=s};
+
+            if (!String.IsNullOrEmpty(search))
+            {
+
+                ListRoditelja = ListRoditelja.Where(x => x.Prezime.Contains(search) || x.Ime.Contains(search));
+            }
+
+            switch (sortOrder)
+            {
+                case "ime_desc":
+                    ListRoditelja = ListRoditelja.OrderByDescending(x => x.Prezime);
+                    break;
+                default:
+                    ListRoditelja = ListRoditelja.OrderBy(x => x.Prezime);
+                    break;
+
+            }
+
+            int pageSize = 10;
+            return PartialView(await PaginatedList<Roditelj>.CreateAsync(ListRoditelja.AsNoTracking(), page ?? 1, pageSize));
+
         }
 
         #region DodavanjeRoditelja
@@ -42,13 +76,18 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
                 }).ToList()
             };
 
-            return View("DodajRoditelja",vm);
+            return PartialView(vm);
         }
 
 
         [HttpPost]
         public IActionResult DodajRoditelja(RoditeljDodajViewModel vm)
         {
+            if (!ModelState.IsValid) {
+
+                return View("DodajRoditelja", GetDefaultVM(vm));
+
+            }
 
             KorisnickiNalog korisnicki = new KorisnickiNalog
             {
@@ -81,7 +120,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
            
 
             
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(tabelaRoditelji));
 
         }
 
@@ -98,7 +137,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             
             _context._Roditelj.Remove(izbrisi);
             _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(tabelaRoditelji));
         }
 
         public IActionResult Uredi(int? id)
@@ -126,12 +165,18 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
             
 
-            return View(novi);
+            return PartialView(novi);
 
         }
 
         public IActionResult UrediRoditelja(RoditeljDodajViewModel vm)
         {
+            if (!ModelState.IsValid)
+            {
+
+                return View("Uredi", GetDefaultVM(vm));
+
+            }
 
             Roditelj noviRoditelj = _context._Roditelj.FirstOrDefault(X => X.KorisnikId == vm.RoditeljID);
 
@@ -164,22 +209,37 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         }
 
-        //TrebaDodaradit
+        
         public IActionResult Detalji(int? id)
         {
-            Roditelj novi = _context._Roditelj.Where(s => s.KorisnikId == id).FirstOrDefault();
+            Roditelj novi = _context._Roditelj.Where(s => s.KorisnikId == id).Include(s=>s.Uceniks).FirstOrDefault();
 
-            return View(novi);
+            return PartialView(novi);
 
         }
 
-        //public IActionResult ProvjeriTelefon(Roditelj roditelj)
-        //{
-        //    if (_context._Korisnik.Any(x => x.Telefon == roditelj.Telefon))
-        //        return Json($"Broj{roditelj.Telefon} je zauzet!");
-        //    return Json(true);
-        //}
+        public IActionResult ProvjeriTelefon(Roditelj roditelj)
+        {
+            if (_context._Korisnik.Any(x => x.Telefon == roditelj.Telefon))
+                return Json($"Broj{roditelj.Telefon} je zauzet!");
+            return Json(true);
+        }
 
-       
+
+        public RoditeljDodajViewModel GetDefaultVM(RoditeljDodajViewModel vm) {
+
+            if (vm.Gradovi == null)
+            {
+                vm.Gradovi = _context._Grad.Select(x => new SelectListItem
+                {
+                    Value = x.GradId.ToString(),
+                    Text = x.Naziv
+                }).ToList();
+            }
+
+            return vm;
+        }
+
+
     }
 }

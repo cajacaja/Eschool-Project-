@@ -11,5 +11,6 @@ namespace eSchool.Data.Models
         public string Vladanje { get; set; }
         public int? RoditeljId { get; set; }
         public Roditelj Roditelj { get; set; }
+        public byte[] KorisnickaSlika { get; set; }
     }
 }

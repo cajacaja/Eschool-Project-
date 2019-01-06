@@ -1,0 +1,44 @@
+﻿@model AnagazmanNaPredmet
+@{
+    ViewData["Title"] = "DodajPredmetUProgram";
+}
+
+<h2 class="text-center">Angazovanje nastavnika na predmet!</h2>
+
+<form method="post" asp-action="SnimiPlanPredmet">
+
+   
+
+        <div class="form-group col-md-6 col-md-offset-3">
+            <label asp-for="GodinaStudiranja">Godina studiranja:</label>
+            <input asp-for="GodinaStudiranja" class="form-control" />
+        </div>
+
+        <div class="form-group col-md-6 col-md-offset-3">
+            <label asp-for="BrojCasova">Broj casova</label>
+            <input asp-for="BrojCasova" class="form-control" />
+        </div>
+
+        <div class="form-group col-md-6 col-md-offset-3">
+            <label asp-for="NastavniPlanProgramID">Plan i program</label>
+            <select asp-for="NastavniPlanProgramID" asp-items="@Model.nastavniPlanProgram" class="form-control"></select>
+        </div>
+
+        <div class="form-group col-md-6 col-md-offset-3">
+            <label asp-for="PredmetID">Predmet</label>
+            <select asp-for="PredmetID" asp-items="@Model.predmet" class="form-control"></select>
+        </div>
+
+        <div class="form-group col-md-6 col-md-offset-3">
+            <label asp-for="NastavnikID">Nastavnik</label>
+            <select asp-for="NastavnikID" asp-items="@Model.nastavnik" class="form-control"></select>
+        </div>
+
+
+    
+
+    <div class="col-md-4 col-md-offset-4">
+        <button type="submit" class="btn btn-danger">Dodaj</button>
+    </div>
+</form>
+

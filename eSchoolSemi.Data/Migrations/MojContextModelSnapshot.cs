@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System;
 
@@ -30,15 +28,11 @@ namespace eSchoolSemi.Data.Migrations
 
                     b.Property<int?>("NastavnikId");
 
-                    b.Property<int?>("OdjeljenjeId");
-
                     b.HasKey("AngazovanId");
 
                     b.HasIndex("NastavniPlanPredmetId");
 
                     b.HasIndex("NastavnikId");
-
-                    b.HasIndex("OdjeljenjeId");
 
                     b.ToTable("_Angazovan");
                 });
@@ -147,15 +141,13 @@ namespace eSchoolSemi.Data.Migrations
                     b.Property<int>("NastavniPlanPredmetId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("BrojSati");
+                    b.Property<int>("BrojCasova");
 
                     b.Property<string>("GodinaStudiranja");
 
                     b.Property<int?>("NastavniPlanId");
 
                     b.Property<int?>("PredmetId");
-
-                    b.Property<string>("Sifra");
 
                     b.HasKey("NastavniPlanPredmetId");
 
@@ -171,9 +163,15 @@ namespace eSchoolSemi.Data.Migrations
                     b.Property<int>("ObavjestenjeId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("AdministatorID");
+
+                    b.Property<int?>("AdministratorKorisnikId");
+
                     b.Property<DateTime>("DatumObavjestenja");
 
-                    b.Property<int?>("NastavniPlanPredmetId");
+                    b.Property<string>("Naslov");
+
+                    b.Property<int?>("NastavnikID");
 
                     b.Property<string>("Sadrzaj");
 
@@ -181,7 +179,9 @@ namespace eSchoolSemi.Data.Migrations
 
                     b.HasKey("ObavjestenjeId");
 
-                    b.HasIndex("NastavniPlanPredmetId");
+                    b.HasIndex("AdministratorKorisnikId");
+
+                    b.HasIndex("NastavnikID");
 
                     b.HasIndex("TipObavijestiId");
 
@@ -223,13 +223,19 @@ namespace eSchoolSemi.Data.Migrations
                     b.Property<int>("OdrzanCasId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("AngazovanId");
-
                     b.Property<DateTime>("DatumOdrzavanja");
+
+                    b.Property<int>("NastavniPlanPredmetId");
+
+                    b.Property<string>("Naziv");
+
+                    b.Property<int>("OdjeljenjeID");
 
                     b.HasKey("OdrzanCasId");
 
-                    b.HasIndex("AngazovanId");
+                    b.HasIndex("NastavniPlanPredmetId");
+
+                    b.HasIndex("OdjeljenjeID");
 
                     b.ToTable("_OdrzanCas");
                 });
@@ -239,7 +245,7 @@ namespace eSchoolSemi.Data.Migrations
                     b.Property<int>("OdrzanCasDetaljiId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Ocjena");
+                    b.Property<int?>("Ocjena");
 
                     b.Property<int?>("OdrzanCasId");
 
@@ -247,15 +253,11 @@ namespace eSchoolSemi.Data.Migrations
 
                     b.Property<bool>("Opravdano");
 
-                    b.Property<int?>("TipOcjeneId");
-
                     b.Property<int?>("UpisUOdjeljenjeId");
 
                     b.HasKey("OdrzanCasDetaljiId");
 
                     b.HasIndex("OdrzanCasId");
-
-                    b.HasIndex("TipOcjeneId");
 
                     b.HasIndex("UpisUOdjeljenjeId");
 
@@ -365,9 +367,9 @@ namespace eSchoolSemi.Data.Migrations
 
                     b.Property<int>("BrojUDnevniku");
 
-                    b.Property<int?>("OdjeljenjeId");
+                    b.Property<int>("OdjeljenjeId");
 
-                    b.Property<int?>("UcenikId");
+                    b.Property<int>("UcenikId");
 
                     b.HasKey("UpisUOdjeljenjeId");
 
@@ -396,6 +398,18 @@ namespace eSchoolSemi.Data.Migrations
                     b.ToTable("AutorizacijskiToken");
                 });
 
+            modelBuilder.Entity("eSchoolSemi.Data.Models.Dan", b =>
+                {
+                    b.Property<int>("DanID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Naziv");
+
+                    b.HasKey("DanID");
+
+                    b.ToTable("Dan");
+                });
+
             modelBuilder.Entity("eSchoolSemi.Data.Models.KorisnickiNalog", b =>
                 {
                     b.Property<int>("KorisnickiNalogID")
@@ -410,6 +424,101 @@ namespace eSchoolSemi.Data.Migrations
                     b.HasKey("KorisnickiNalogID");
 
                     b.ToTable("korisnickiNalogs");
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.ObavjestenjeOdjeljenje", b =>
+                {
+                    b.Property<int>("ObavjestenjeOdjeljenjeID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ObavjestenjeID");
+
+                    b.Property<int>("OdjeljenjeID");
+
+                    b.HasKey("ObavjestenjeOdjeljenjeID");
+
+                    b.HasIndex("ObavjestenjeID");
+
+                    b.HasIndex("OdjeljenjeID");
+
+                    b.ToTable("ObavjestenjeOdjeljenje");
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.PocetakCasa", b =>
+                {
+                    b.Property<int>("PocetakCasaID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Pocetak");
+
+                    b.HasKey("PocetakCasaID");
+
+                    b.ToTable("PocetakCasa");
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.Raspored", b =>
+                {
+                    b.Property<int>("RasporedID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Naziv");
+
+                    b.Property<int>("OdjeljenjeID");
+
+                    b.HasKey("RasporedID");
+
+                    b.HasIndex("OdjeljenjeID")
+                        .IsUnique();
+
+                    b.ToTable("Raspored");
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.RasporedDetalj", b =>
+                {
+                    b.Property<int>("RasporedDetaljID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("DanID");
+
+                    b.Property<int>("PocetakCasaId");
+
+                    b.Property<int>("PredmetID");
+
+                    b.Property<int>("RasporedID");
+
+                    b.HasKey("RasporedDetaljID");
+
+                    b.HasIndex("DanID");
+
+                    b.HasIndex("PocetakCasaId");
+
+                    b.HasIndex("PredmetID");
+
+                    b.HasIndex("RasporedID");
+
+                    b.ToTable("RasporedDetalj");
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.ZakljucnaOcjena", b =>
+                {
+                    b.Property<int>("ZakljucnaOcjenaID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DatumZakljucivanja");
+
+                    b.Property<int>("Ocjena");
+
+                    b.Property<int>("PredmetID");
+
+                    b.Property<int>("UpisUOdjeljenjeId");
+
+                    b.HasKey("ZakljucnaOcjenaID");
+
+                    b.HasIndex("PredmetID");
+
+                    b.HasIndex("UpisUOdjeljenjeId");
+
+                    b.ToTable("ZakljucnaOcjena");
                 });
 
             modelBuilder.Entity("eSchool.Data.Models.Nastavnik", b =>
@@ -441,6 +550,8 @@ namespace eSchoolSemi.Data.Migrations
                 {
                     b.HasBaseType("eSchool.Data.Models.Korisnik");
 
+                    b.Property<byte[]>("KorisnickaSlika");
+
                     b.Property<int?>("RoditeljId");
 
                     b.Property<string>("Vladanje");
@@ -465,16 +576,12 @@ namespace eSchoolSemi.Data.Migrations
             modelBuilder.Entity("eSchool.Data.Models.Angazovan", b =>
                 {
                     b.HasOne("eSchool.Data.Models.NastavniPlanPredmet", "NastavniPlanPredmet")
-                        .WithMany("Angazovani")
+                        .WithMany()
                         .HasForeignKey("NastavniPlanPredmetId");
 
                     b.HasOne("eSchool.Data.Models.Nastavnik", "Nastavnik")
                         .WithMany()
                         .HasForeignKey("NastavnikId");
-
-                    b.HasOne("eSchool.Data.Models.Odjeljenje", "Odjeljenje")
-                        .WithMany()
-                        .HasForeignKey("OdjeljenjeId");
                 });
 
             modelBuilder.Entity("eSchool.Data.Models.Korisnik", b =>
@@ -513,9 +620,13 @@ namespace eSchoolSemi.Data.Migrations
 
             modelBuilder.Entity("eSchool.Data.Models.Obavjestenje", b =>
                 {
-                    b.HasOne("eSchool.Data.Models.NastavniPlanPredmet", "NastavniPlanPredmet")
+                    b.HasOne("eSchoolSemi.Data.Models.Administrator", "Administrator")
                         .WithMany()
-                        .HasForeignKey("NastavniPlanPredmetId");
+                        .HasForeignKey("AdministratorKorisnikId");
+
+                    b.HasOne("eSchool.Data.Models.Nastavnik", "Nastavnik")
+                        .WithMany()
+                        .HasForeignKey("NastavnikID");
 
                     b.HasOne("eSchool.Data.Models.TipObavijesti", "TipObavijesti")
                         .WithMany()
@@ -543,9 +654,15 @@ namespace eSchoolSemi.Data.Migrations
 
             modelBuilder.Entity("eSchool.Data.Models.OdrzanCas", b =>
                 {
-                    b.HasOne("eSchool.Data.Models.Angazovan", "Angazovan")
+                    b.HasOne("eSchool.Data.Models.NastavniPlanPredmet", "NastavniPlanPredmet")
                         .WithMany()
-                        .HasForeignKey("AngazovanId");
+                        .HasForeignKey("NastavniPlanPredmetId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eSchool.Data.Models.Odjeljenje", "Odjeljenje")
+                        .WithMany()
+                        .HasForeignKey("OdjeljenjeID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("eSchool.Data.Models.OdrzanCasDetalji", b =>
@@ -553,10 +670,6 @@ namespace eSchoolSemi.Data.Migrations
                     b.HasOne("eSchool.Data.Models.OdrzanCas", "OdrzanCas")
                         .WithMany()
                         .HasForeignKey("OdrzanCasId");
-
-                    b.HasOne("eSchool.Data.Models.TipOcjene", "TipOcjene")
-                        .WithMany()
-                        .HasForeignKey("TipOcjeneId");
 
                     b.HasOne("eSchool.Data.Models.UpisUOdjeljenje", "UpisUOdjeljenje")
                         .WithMany()
@@ -593,11 +706,13 @@ namespace eSchoolSemi.Data.Migrations
                 {
                     b.HasOne("eSchool.Data.Models.Odjeljenje", "Odjeljenje")
                         .WithMany()
-                        .HasForeignKey("OdjeljenjeId");
+                        .HasForeignKey("OdjeljenjeId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("eSchool.Data.Models.Ucenik", "Ucenik")
                         .WithMany()
-                        .HasForeignKey("UcenikId");
+                        .HasForeignKey("UcenikId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("eSchoolSemi.Data.Models.AutorizacijskiToken", b =>
@@ -605,6 +720,63 @@ namespace eSchoolSemi.Data.Migrations
                     b.HasOne("eSchoolSemi.Data.Models.KorisnickiNalog", "KorisnickiNalog")
                         .WithMany()
                         .HasForeignKey("KorisnickiNalogID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.ObavjestenjeOdjeljenje", b =>
+                {
+                    b.HasOne("eSchool.Data.Models.Obavjestenje", "Obavjestenje")
+                        .WithMany()
+                        .HasForeignKey("ObavjestenjeID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eSchool.Data.Models.Odjeljenje", "Odjeljenje")
+                        .WithMany()
+                        .HasForeignKey("OdjeljenjeID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.Raspored", b =>
+                {
+                    b.HasOne("eSchool.Data.Models.Odjeljenje", "Odjeljenje")
+                        .WithOne("Raspored")
+                        .HasForeignKey("eSchoolSemi.Data.Models.Raspored", "OdjeljenjeID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.RasporedDetalj", b =>
+                {
+                    b.HasOne("eSchoolSemi.Data.Models.Dan", "Dan")
+                        .WithMany()
+                        .HasForeignKey("DanID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eSchoolSemi.Data.Models.PocetakCasa", "PocetakCasa")
+                        .WithMany()
+                        .HasForeignKey("PocetakCasaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eSchool.Data.Models.Predmet", "Predmet")
+                        .WithMany()
+                        .HasForeignKey("PredmetID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eSchoolSemi.Data.Models.Raspored", "Raspored")
+                        .WithMany()
+                        .HasForeignKey("RasporedID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("eSchoolSemi.Data.Models.ZakljucnaOcjena", b =>
+                {
+                    b.HasOne("eSchool.Data.Models.Predmet", "Predmet")
+                        .WithMany()
+                        .HasForeignKey("PredmetID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eSchool.Data.Models.UpisUOdjeljenje", "UpisUOdjeljenje")
+                        .WithMany()
+                        .HasForeignKey("UpisUOdjeljenjeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

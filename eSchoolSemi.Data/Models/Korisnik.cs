@@ -16,6 +16,7 @@ namespace eSchool.Data.Models
         [Required]
         public string Prezime { get; set; }
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DatumRodenja { get; set; }
         public string KorisnickoIme { get; set; }
         public string Lozinka { get; set; }
@@ -23,8 +24,8 @@ namespace eSchool.Data.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        //[RegularExpression(@"[+]?\d{3}[\(]\d{2}[\)][\/-]\d{3}[\/-]\d{3,4}")]
-   
+       
+
         public string  Telefon { get; set; }
         public Grad MjestoRodenja { get; set; }
         public int? GradId { get; set; }

@@ -3,33 +3,35 @@
     ViewData["Title"] = "Detalji";
 }
 
-<h2>@Model.Naziv</h2>
+<h2 class="text-center">@Model.Naziv</h2>
 
 
 <table  class="table table-bordered">
    <thead>
        <tr>
-           <th>Predmeti</th>
+           <th>Naziv predmeta</th>
+           <th>Broj casova</th>
+           <th>Nastavnik</th>
            <th>Akcija</th>
        </tr>
    </thead>
 
-    <tbody>
-        @foreach (var item in Model.Npp)
-        {
-            foreach (var obj in Model.Predmeti)
-            {
-                if (item.PredmetId.ToString()==obj.Value)
-                {
-                    <tr>
-                        <td>@obj.Text</td>
-                        <td><a asp-action="AnagazujNastavnika" asp-route-nastavniPlanPredmetID="@item.NastavniPlanPredmetId" class="btn btn-danger" >Angazuj</a></td>
-                        <td><a asp-action="ObrisiPredmetIzNPP" asp-route-nastavniPlanProgramID="@item.NastavniPlanPredmetId" class="btn btn-danger">Obrisi predmet</a></td>
-                    </tr>
-                }
-            }
-        }
-    </tbody>
+   <tbody>
+       @foreach (var item in Model.Angazovani)
+    {
+        if (item != null)
+         {
+    
+           <tr>
+               <td>@item.NazivPredmeta</td>
+               <td>@item.BrojCasova</td>
+               <td>@item.NazivNastavnika</td>
+               <td><a asp-action="ObrisiPredmet" asp-route-id="@item.AngazovanID" class="btn btn-info"> Obrisi angazman</a></td>
+           </tr>
+         }
+
+}
+   </tbody>
 </table>
 
 

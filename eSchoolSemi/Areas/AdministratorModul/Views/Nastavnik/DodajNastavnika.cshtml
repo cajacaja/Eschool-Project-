@@ -3,69 +3,139 @@
     ViewData["Title"] = "NastavnikDodaj";
 }
 
-<h2>NastavnikDodaj</h2>
-<form asp-action="DodajNastavnika" method="post">
 
-    <div class="row">
-        <div class="form-group">
-            <label asp-for="Titula">Titual:</label>
-            <input asp-for="Titula" class="form-control" />
+<div class="modal fade" id="dodajNastavnik" tabindex="-1" role="dialog" aria-labelledby="dodajNastavnikLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-center" id="dodajNastavnikLabel">Dodaj nastavnika!</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form asp-action="DodajNastavnika" method="post" class="col-sm-offset-2 col-sm-8">
+                        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                        <div class="row">
+                            <div class="form-group">
+                                <label asp-for="Titula">Titual:</label>
+                                <input asp-for="Titula" class="form-control" />
+                                <span asp-validation-for="Titula" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Ime">Ime:</label>
+                                <input asp-for="Ime" class="form-control" />
+                                <span asp-validation-for="Ime" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Prezime">Prezime:</label>
+                                <input asp-for="Prezime" class="form-control" />
+                                <span asp-validation-for="Prezime" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Username">Username:</label>
+                                <input asp-for="Username" class="form-control" />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Password">Password:</label>
+                                <input asp-for="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email">Email:</label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Telefon">Telefon:</label>
+                                <input asp-for="Telefon" class="form-control" />
+                                <span asp-validation-for="Telefon" class="text-danger"></span>
+                            </div>
+
+                            <label asp-for="GradID">Grad:</label>
+                            <select asp-for="GradID" class="form-control">
+                                @foreach (var o in Model.Gradovi)
+            {
+
+                    <option value="@o.Value">@o.Text</option>
+}
+                            </select>
+
+                            <div class="form-group">
+                                <label asp-for="DatumRodjenja">DatumRodenja:</label>
+                                <input asp-for="DatumRodjenja" class="form-control" />
+                                <span asp-validation-for="DatumRodjenja" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="DatumZaposljenja">DatumZaposlenja:</label>
+                                <input asp-for="DatumZaposljenja" class="form-control" />
+                                <span asp-validation-for="DatumZaposljenja" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Zvanje">Zvanje:</label>
+                                <input asp-for="Zvanje" class="form-control" />
+                                <span asp-validation-for="Zvanje" class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-save="modal">Save</button>
+
+            </div>
         </div>
-
-        <div class="form-group">
-            <label asp-for="Ime">Ime:</label>
-            <input asp-for="Ime" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Prezime">Prezime:</label>
-            <input asp-for="Prezime" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Username">Username:</label>
-            <input asp-for="Username" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Password">Password:</label>
-            <input asp-for="Password" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Email">Email:</label>
-            <input asp-for="Email" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label asp-for="Telefon">Telefon:</label>
-            <input asp-for="Telefon" class="form-control" />
-        </div>
-
-        <label asp-for="GradID">Grad:</label>
-        <select asp-for="GradID" class="form-control">
-            @foreach (var o in Model.Gradovi)
-        {
-
-            <option value="@o.Value">@o.Text</option>
-    }
-        </select>
-
-        <div class="form-group">
-            <label asp-for="DatumRodjenja">DatumRodenja:</label>
-            <input asp-for="DatumRodjenja" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="DatumZaposljenja">DatumZaposlenja:</label>
-            <input asp-for="DatumZaposljenja" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Zvanje">Zvanje:</label>
-            <input asp-for="Zvanje" class="form-control" />
-        </div>
-
     </div>
-    <button type="submit" class="btn btn-primary">Dodaj</button>
-</form>
+</div>
 
+
+<script>
+     $(function () {
+
+            $('button[data-save="modal"]').click(function (event) {
+
+                event.preventDefault();
+                var form = $(this).parents('.modal').find('form');
+                var actionUrl = form.attr("action");
+
+                var dataToSend = new FormData(form.get(0));
+
+                $.ajax({ url: actionUrl, method: 'post', data: dataToSend, processData: false, contentType: false }).
+                    done(function (data) {
+                        var newBody = $('.modal-body', data);
+                        $("#dodajNastavnik").find('.modal-body').replaceWith(newBody);
+
+                        if (newBody.find('[name="IsValid"]').val()!="False") {
+
+                            $('.modal').modal('hide');
+
+                            $.ajax({
+                                 url: "@Url.Action("tabelaNastavnici", "Nastavnik")", success: function (result) {
+                                     $("#tabelaN").html(result);
+                                    }
+                                 });
+                        }
+
+                    });
+
+
+
+
+            });
+
+        });
+</script>

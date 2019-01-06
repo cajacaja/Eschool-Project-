@@ -23,44 +23,65 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         public async Task<IActionResult> Index()
         {
 
-            NastavnikIndexVM obj = new NastavnikIndexVM
-            {
-
-                Nastavnici = _context._Nastavnik.Select(x => new NastavnikIndexVM.Row
-                {
-
-                    ImePrezime = x.Ime + " " + x.Prezime,
-                    Zvanje = x.Zvanje,
-                    Titula = x.Titula,
-                    DatumZaposljenja=x.DatumZaposlenja.ToShortDateString(),
-                    Username=x.KorisnickoIme,
-                    Password=x.Lozinka,
-                    NastavniID=x.KorisnikId
-                    
-
-                }).ToList()
-            };
+            
+            
 
 
-
-
-            return View(obj);
+            return View();
         }
 
+        public async Task<IActionResult> tabelaNastavnici(string sortOrder, string search, int? page)
+        {
+
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "ime_desc" : "";
+
+            var Nastavnici = _context._Nastavnik.Include(x => x.MjestoRodenja).ToList();
+            IQueryable<Nastavnik> ListaNastavnika = from x in _context._Nastavnik
+                                                 from s in _context._Grad
+                                                 where x.GradId == s.GradId
+                                                 select new Nastavnik
+                                                 {
+                                                     KorisnikId = x.KorisnikId,
+                                                     Titula=x.Titula,
+                                                     Zvanje = x.Zvanje,
+                                                     DatumZaposlenja = x.DatumZaposlenja,
+                                                     KorisnickoIme = x.KorisnickoIme,
+                                                     Lozinka = x.Lozinka,
+                                                     Ime = x.Ime,
+                                                     Prezime = x.Prezime,
+                                                     GradId = x.GradId,
+                                                     MjestoRodenja = s
+                                                 };
+
+            if (!String.IsNullOrEmpty(search))
+            {
+
+                ListaNastavnika = ListaNastavnika.Where(x => x.Prezime.Contains(search) || x.Ime.Contains(search));
+            }
+
+            switch (sortOrder)
+            {
+                case "ime_desc":
+                    ListaNastavnika = ListaNastavnika.OrderByDescending(x => x.Prezime);
+                    break;
+                default:
+                    ListaNastavnika = ListaNastavnika.OrderBy(x => x.Prezime);
+                    break;
+
+            }
+
+            int pageSize = 10;
+            return PartialView(await PaginatedList<Nastavnik>.CreateAsync(ListaNastavnika.AsNoTracking(), page ?? 1, pageSize));
+
+        }
 
         public IActionResult DodajNastavnika()
         {
-            NastavnikGradViewModel vm = new NastavnikGradViewModel {
-
-                Gradovi=_context._Grad.Select(x=>new SelectListItem {
-                    Value=x.GradId.ToString(),
-                    Text=x.Naziv
-                }).ToList()
-            };
+            NastavnikGradViewModel vm = new NastavnikGradViewModel();
 
 
 
-            return View(vm);
+            return PartialView(GetDefaultVM(vm));
         }
 
         //private NastavnikGradViewModel GetDefaultVM(NastavnikGradViewModel vm)
@@ -78,6 +99,11 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         [HttpPost]
         public IActionResult DodajNastavnika(NastavnikGradViewModel obj)
         {
+            if (!ModelState.IsValid)
+            {
+
+                return View("DodajNastavnika", GetDefaultVM(obj));
+            }
 
             KorisnickiNalog korisnik = new KorisnickiNalog
             {
@@ -131,7 +157,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             _context._Nastavnik.Remove(_context._Nastavnik.Find(NastavnikID));
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(tabelaNastavnici));
         }
 
         public IActionResult Uredi(int? id)
@@ -158,12 +184,19 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             };
 
             
-            return View(novi);
+            return PartialView(novi);
 
         }
 
         public IActionResult UrediNastavnika(NastavnikGradViewModel vm)
         {
+
+            if (!ModelState.IsValid)
+            {
+
+                return View("Uredi", GetDefaultVM(vm));
+            }
+
             Nastavnik zamjena = _context._Nastavnik.FirstOrDefault(x => x.KorisnikId == vm.NastavniID);
 
             zamjena.Ime = vm.Ime;
@@ -185,12 +218,53 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         }
 
+        public IActionResult Detalji(int nastavnikID) {
+
+            var Nastavnik = _context._Nastavnik.FirstOrDefault(x => x.KorisnikId == nastavnikID);
+
+            if (Nastavnik==null)
+            {
+                return NotFound();
+            }
+
+            NastavnikGradViewModel detaljiNastavnik = new NastavnikGradViewModel {
+
+
+                Ime=Nastavnik.Ime,
+                Prezime=Nastavnik.Prezime,
+                Email=Nastavnik.Email,
+                Telefon=Nastavnik.Telefon,
+                DatumRodjenja=Nastavnik.DatumRodenja,
+                DatumZaposljenja=Nastavnik.DatumZaposlenja,
+                MjestoRodjenja=_context._Grad.First(x=>x.GradId==Nastavnik.GradId).Naziv,
+                Zvanje=Nastavnik.Zvanje            
+                
+            };
+
+            return PartialView(detaljiNastavnik);
+        }
+
         public IActionResult Angazuj(int nastavnikID)
         {
             Angazovan angazujNastavnika = new Angazovan { NastavnikId = nastavnikID };
 
             return View(angazujNastavnika);
         }
+
+       
+            public NastavnikGradViewModel GetDefaultVM(NastavnikGradViewModel vm) {
+
+                if (vm.Gradovi==null)
+                {
+                vm.Gradovi = _context._Grad.Select(x => new SelectListItem
+                {
+                    Value = x.GradId.ToString(),
+                    Text = x.Naziv
+                }).ToList();
+                }
+
+            return vm;
+            }
 
         //public IActionResult DodajAngazman()
         //{

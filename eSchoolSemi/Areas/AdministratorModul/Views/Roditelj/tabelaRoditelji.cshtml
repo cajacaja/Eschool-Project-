@@ -1,0 +1,119 @@
+﻿@model eSchoolSemi.Web.Helper.PaginatedList<Roditelj>
+
+
+<div class="container-fluid">
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th><button id="orderDugme" class="btn-link">Naziv</button></th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Korisnicko Ime</th>
+                <th>Lozinka</th>
+                <th>Grad</th>
+                <th>Akcije</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>@s.Ime @s.Prezime</td>
+                    <td>@s.Email</td>
+                    <td>@s.Telefon</td>
+                    <td>@s.KorisnickoIme</td>
+                    <td>@s.Lozinka</td>
+                    <td>@s.MjestoRodenja.Naziv</td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="obrisRoditelj" data-url="@Url.Action("Obrisi","Roditelj",new {RoditeljID=s.KorisnikId })"><span class="glyphicon glyphicon-trash"></span></button>
+                        <button type="button" title="Uredi" class="btn btn-info" data-toggle="ajax-modal" data-target="#detaljiRoditelj" data-url="@Url.Action("Detalji","Roditelj",new {id=s.KorisnikId })">
+                            <span class="glyphicon glyphicon-cog"></span>
+                        </button>
+                        <button type="button" title="Detalji" class="btn btn-info" data-toggle="ajax-modal" data-target="#urediRoditelj" data-url="@Url.Action("Uredi","Roditelj",new {id=s.KorisnikId })">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                        </button>
+                    </td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<button id="Nazad" class="btn btn-default @prevDisabled">
+    Previous
+</button>
+<button id="Naprijed"
+        class="btn btn-default @nextDisabled">
+    Next
+</button>
+
+<script>
+    $(function () {
+
+        $('button[data-toggle="ajax-modal"]').click(function (event) {
+
+            var url = $(this).attr('data-url');
+            var placeholder = $('#modalRoditelj');
+
+            $.ajax({
+                url: url,success: function (result) {
+                    placeholder.html(result);
+                    placeholder.find('.modal').modal('show');
+                }
+            });
+            
+        });
+    });
+
+    $('button[data-toggle="obrisRoditelj"]').click(function (event) {
+
+        var url = $(this).attr('data-url');
+
+        $.ajax({
+            url: url, success: function (result) {
+                $('#tabelaID').html(result);
+        } });
+    });
+
+    $("#orderDugme").click(function (parametars) {
+
+        var searchString = $("#roditeljValue").val();
+        var Url="/AdministratorModul/Roditelj/tabelaRoditelji/?search=" +searchString+"&&sortOrder="+"@ViewData["NameSortParm"]"+"&&page=@(Model.PageIndex)";
+
+        $.get(Url, function (rezultat, status) {
+
+            $("#tabelaID").html(rezultat);
+        });
+
+
+    });
+
+    $("#Nazad").click(function (parametars) {
+
+        var searchString = $("#roditeljValue").val();
+        var Url ="/AdministratorModul/Roditelj/tabelaRoditelji/?search ="+searchString+"&&page=@(Model.PageIndex-1)";
+        $.get(Url, function (rezultat, status) {
+
+            $("#tabelaID").html(rezultat);
+        });
+    });
+
+    
+    $("#Naprijed").click(function (parametars) {
+
+        var searchString = $("#roditeljValue").val();
+        var Url = "/AdministratorModul/Roditelj/tabelaRoditelji/?search=" + searchString+"&&page=@(Model.PageIndex+1)";
+        $.get(Url, function (rezultat, status) {
+
+            $("#tabelaID").html(rezultat);
+        });
+    });
+
+</script>

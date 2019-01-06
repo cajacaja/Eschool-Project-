@@ -1,0 +1,128 @@
+﻿@model eSchoolSemi.Web.Helper.PaginatedList<Ucenik>
+
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th><button id="OrderDugme" class="btn btn-link">Naziv</button></th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th>Korisnicko Ime</th>
+            <th>Lozinka</th>
+            <th>Akcije</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Ime @item.Prezime</td>
+                <td>@item.Email</td>
+                <td>@item.Telefon</td>
+                <td>@item.KorisnickoIme</td>
+                <td>@item.Lozinka</td>
+                <td>
+                    <button type="button" title="Detalji" class="btn btn-info" data-toggle="ajax-modal" data-target="#add-contact" data-url="@Url.Action("DetaljiUcenik", "AjaxOdjeljenje", new { UcenikId = item.KorisnikId })">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+</button>
+                    <button type="button" title="Uredi"class="btn btn-info" data-toggle="ajax-modal" data-target="#urediUcenik" data-url="@Url.Action("Uredi","Ucenik",new {id=item.KorisnikId })">
+                        <span class="glyphicon glyphicon-cog"></span>
+                    </button>
+                    <button data-toggle="nesto" data-url="@Url.Action("Obrisi","Ucenik",new {UcenikID=item.KorisnikId })" title="Obrisi" class="btn btn-info"><span class="glyphicon glyphicon-trash"></span></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<button id="Nazad" class="btn btn-default @prevDisabled">
+    Previous
+</button>
+<button id="Naprijed"
+   class="btn btn-default @nextDisabled">
+    Next
+</button>
+
+<script>
+    $("#OrderDugme").click(function (parametars) {
+
+        var searchString = $("#ucenikValue").val();
+        var Url="/AdministratorModul/Ucenik/_tabela/?search=" +searchString+"&&sortOrder="+"@ViewData["NameSortParm"]"+"&&page=@Model.PageIndex";
+
+        $.get(Url, function (rezultat, status) {
+
+            $("#test").html(rezultat);
+        });
+
+        
+    });
+
+
+
+    $("#Nazad").click(function (parametars) {
+
+        var searchString = $("#ucenikValue").val();
+        var Url="/AdministratorModul/Ucenik/_tabela/?search=" +searchString+"&&page=@(Model.PageIndex-1)";
+        $.get(Url, function (rezultat, status) {
+
+            $("#test").html(rezultat);
+        });
+    });
+
+    
+    $("#Naprijed").click(function (parametars) {
+
+        var searchString = $("#ucenikValue").val();
+        var Url="/AdministratorModul/Ucenik/_tabela/?search=" +searchString+"&&page=@(Model.PageIndex+1)";
+        $.get(Url, function (rezultat, status) {
+
+            $("#test").html(rezultat);
+        });
+    });
+
+
+    $(function () {
+
+        $('button[data-toggle="ajax-modal"]').click(function (event) {
+
+            var url = $(this).attr('data-url');
+            var placeholder = $('#modalPlaceholder');
+
+            //$.get(url).done(function (data) {
+
+            //    placeholder.html(data);
+            //    placeholder.find('.modal').modal('show');
+            //});
+
+            $.ajax({
+                url: url, success: function (result) {
+                    placeholder.html(result);
+                    placeholder.find('.modal').modal('show');
+                }
+            });
+        });
+    });
+
+
+    $(function () {
+
+        $('button[data-toggle="nesto"]').click(function (event) {
+
+            var url = $(this).attr('data-url');
+            var placeholder = $('#test');
+
+            $.get(url).done(function (data) {
+
+                placeholder.html(data);
+                
+            });
+        });
+    });
+
+</script>

@@ -1,42 +1,98 @@
-﻿@model List<Ucenik>
+﻿@model eSchoolSemi.Web.Helper.PaginatedList<Ucenik>
 @{
     ViewData["Title"] = "Index";
+
+
+
+    var ucenik = new UcenikDodajVM();
+
+    ucenik = ViewBag.Gradovi;
+
+
+
 }
 
-<a asp-action="DodajUcenika" class="btn btn-success">Dodaj Ucenika</a>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Naziv</th>
-            <th>Email</th>
-            <th>Telefon</th>
-            <th>Korisnicko Ime</th>
-            <th>Lozinka</th>
-            <th>Akcije</th>
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Ime @item.Prezime</td>         
-                <td>@item.Email</td>
-                <td>@item.Telefon</td>
-                <td>@item.KorisnickoIme</td>
-                <td>@item.Lozinka</td>
-                <td>
-                    <form asp-action="Obrisi" method="post">
-                        <input hidden name="UcenikID" value="@item.KorisnikId" />
-                        <button type="submit" class="btn btn-danger">Obrisi</button>
-                    </form>
-                </td>
-                <td>
-                    <a asp-action="Uredi" asp-route-id="@item.KorisnikId" class="btn btn-info">Uredi</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
-<a asp-action="DodajUOdjeljenje" class="btn btn-info">Dodaj u odjeljenje!</a>
+
+
+<div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-5 verti">
+
+                    <input type="text" class="form-control" id="ucenikValue" placeholder="Pornadji ucenika" />
+                </div>
+                <div class="col-sm-3">
+
+                    <button id="dugmeID" class="btn btn-info">Pronadji</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<br />
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-sm-2">
+
+            @Html.Partial("~/Areas/AdministratorModul/Views/Ucenik/DodajUcenika.cshtml", ucenik)
+
+        </div>
+        
+
+    </div>
+</div>
+
+<br />
+
+<div id="test"></div>
+<div id="modalPlaceholder"></div>
+
+
+<script>
+
+    $(document).ready(function (parametars) { 
+
+        $.ajax({
+            url: "@Url.Action("_tabela", "Ucenik")", success: function (result) {
+                $("#test").html(result);
+            }
+        });
+    });
+
+    
+
+
+    $("#dugmeID").click(function (parametars) {
+
+        var searchString = $("#ucenikValue").val();
+
+
+        
+
+        $.ajax({
+            url:"/AdministratorModul/Ucenik/_tabela/?search=" +searchString+"&&sortOrder="+"@ViewData["NameSortParm"]", success: function (result){
+
+                $("#test").html(result);
+            }
+        });
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+</script>

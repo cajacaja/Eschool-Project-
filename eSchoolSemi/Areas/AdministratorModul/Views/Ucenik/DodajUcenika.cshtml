@@ -1,90 +1,168 @@
 ﻿@model UcenikDodajVM
+
 @{
-    ViewData["Title"] = "Dodaj ucenika!";
+    var provjera = ViewData["Provjera"];
+
 }
+<style>
+    .modal-body col-sm-8 {
+        margin-bottom: 10px;
+    }
+</style>
+
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#ucenikDodajM">Dodaj ucenika</button>
+
+<div id="ucenikDodajM" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Dodaj ucenika</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form method="post" enctype="multipart/form-data" asp-action="SnimiUcenika" id="temp" role="form">
+                        <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                        <div class="form-row">
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-offset-2 col-sm-8 ">
+                                    <label asp-for="Ime"></label>
+                                    <input asp-for="Ime" type="text" class="form-control" />
+                                    <span asp-validation-for="Ime" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-8 ">
+                                    <label asp-for="Prezime"></label>
+                                    <input asp-for="Prezime" type="text" class="form-control" />
+                                    <span asp-validation-for="Prezime" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-8">
+                                    <label asp-for="Username"></label>
+                                    <input asp-for="Username" type="text" class="form-control" />
+                                    <span asp-validation-for="Username" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-8">
+                                    <label asp-for="Password"></label>
+                                    <input asp-for="Password" type="text" class="form-control" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <label asp-for="Telefon"></label>
+                                <input asp-for="Telefon" type="tel" class="form-control" />
+                                <span asp-validation-for="Telefon" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" type="email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
 
 
 
-<h2>DodajUcenika</h2>
-<form asp-action="DodajUcenika" method="post" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <label asp-for="KorinickaSlika">Upload korisnicke slike</label>
+                                <input asp-for="KorinickaSlika" type="file" multiple class="form-control" />
+                                @Html.ValidationMessageFor(m => m.KorinickaSlika, "", new { @class = "text-danger" })
+                            </div>
 
-    <div class="form-group">
-        <label asp-for="Ime" class="col-md-2 control-label">Ime ucenika:</label>
-        <div class="col-md-5">
-            <input asp-for="Ime" class="form-control" />
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <label asp-for="DatumRodjenja">Datum rodjenja</label>
+                                <input asp-for="DatumRodjenja" type="date" class="form-control"/>
+                                @Html.ValidationMessageFor(m => m.DatumRodjenja, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <label asp-for="Roditelj">Unesite prezime i ime roditelja:</label>
+                                <input asp-for="Roditelj" type="text" class="form-control" />
+                                <span asp-validation-for="Roditelj" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <label asp-for="GradID">Mjesto stanovanja</label>
+                                <select asp-for="GradID" asp-items="@Model.Gradovi" class="form-control"></select>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-save="modal">Save</button>
+            </div>
         </div>
+
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Prezime" class="col-md-2 control-label"></label>
-        <div class="col-md-5">
-            <input asp-for="Prezime" class="form-control" />
-        </div>
-    </div>
+<script>
+        $(function () {
 
-    <div class="form-group">
-        <label asp-for="Username" class="col-md-2 control-label"></label>
-        <div class="col-md-5">
-            <input asp-for="Username"  class="form-control" />
-        </div>
-    </div>
+            $('button[data-save="modal"]').click(function (event) {
 
-    <div class="form-group">
-        <label asp-for="Password" class="col-md-2 control-label"></label>
-        <div class="col-md-5">
-            <input asp-for="Password"  class="form-control" />
-        </div>
-    </div>
+                event.preventDefault();
+                var form = $(this).parents('.modal').find('form');
+                var actionUrl = form.attr("action");
+                
+                var dataToSend = new FormData(form.get(0));
+                
+                $.ajax({ url: actionUrl, method: 'post', data: dataToSend, processData: false, contentType: false }).
+                    done(function (data) { 
+                        var newBody = $('.modal-body', data);
+                        $("#ucenikDodajM").find('.modal-body').replaceWith(newBody);
 
-    <div class="form-group">
-        <label asp-for="Telefon" class="col-md-2 control-label"></label>
-        <div class="col-md-5">
-            <input asp-for="Telefon" class="form-control" />
-        </div>
-    </div>
+                        if (newBody.find('[name="IsValid"]').val()!="False") {
+                        
+                        $('.modal').modal('hide');
 
-    <div class="form-group">
-        <label asp-for="Email" class="col-md-2 control-label"></label>
-        <div class="col-md-5">
-            <input asp-for="Email" class="form-control" />
-        </div>
-    </div>
+                        $.post("@Url.Action("_tabela", "Ucenik")", function (rezultat, status) {
+
+                        $("#test").html(rezultat);
+                         });
+                        }
+
+                    });
+
+                
+
+                
+            });
+
+        });
+    </script>
 
 
-    <div class="form-group">
-        <label asp-for="DatumRodjenja" class="col-md-2 control-label"></label>
-        <div class="col-md-5">
-            <input asp-for="DatumRodjenja" type="date" class="form-control" />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="RoditeljID" class="col-md-2 control-label">Odjeljenje</label>
-        <div class="col-md-5">
-            <select asp-for="RoditeljID" asp-items="@Model.Roditleji" class="form-control"></select>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="OdjeljenjeID" class="col-md-2 control-label"></label>
-        <div class="col-md-5">
-            <select asp-for="OdjeljenjeID" asp-items="@Model.Odjeljenja" class="form-control"></select>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="BrojUDnevniku" class="col-md-2 control-label"></label>
-        <div class="col-md-5">
-            <input asp-for="BrojUDnevniku" class="form-control" />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="GradID" class="col-md-2 control-label">Odjeljenje</label>
-        <div class="col-md-5">
-            <select asp-for="GradID" asp-items="@Model.Gradovi" class="form-control"></select>
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-danger col-md-3 col-md-offset-3">Dodaj ucenika!</button>
-</form>

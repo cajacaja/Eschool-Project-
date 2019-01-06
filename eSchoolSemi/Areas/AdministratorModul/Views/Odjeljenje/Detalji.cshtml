@@ -5,62 +5,67 @@
 
 <h2>Detalji</h2>
 
-<form class="form-inline">
-    <div class="row">
-        <div class="form-group col-md-3">
+<form>
+    <div class="form-row">
+        <div class="form-group col-md-6">
             <label asp-for="Odjejlenje.Oznaka">Razred:</label>
             <input asp-for="Odjejlenje.Oznaka" readonly class="form-control" />
         </div>
 
-        <div class="form-group col-md-3">
-            <label asp-for="Odjejlenje.Kapacitet">Kapacitet:</label>
-            <input asp-for="Odjejlenje.Kapacitet" readonly class="form-control" />
-        </div>
-
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-6">
             @foreach (var item in Model.Razrednik)
-        {
-            if (Model.Odjejlenje.RazrednikId.ToString() == item.Value)
             {
-                <label asp-for="Odjejlenje.Razrednik">Razrednik:</label>
-                <input asp-for="@item.Text" readonly class="form-control" />
+                if (Model.Odjejlenje.RazrednikId.ToString() == item.Value)
+                {
+                    <label asp-for="Odjejlenje.Razrednik">Razrednik:</label>
+                    <input asp-for="@item.Text" readonly class="form-control" />
 
-        }
-    }
+                }
+            }
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Odjejlenje.Kapacitet">Kapacitet:</label>
+                <input asp-for="Odjejlenje.Kapacitet" readonly class="form-control" />
+            </div>
         </div>
 
 
-        <div class="form-group col-md-3">
-            @foreach (var item in Model.Predstavnik)
-        {
-            if (Model.Odjejlenje.UcenikID.ToString() == item.Value)
-            {
-                <label asp-for="Odjejlenje.Ucenik">Predstavnik:</label>
-                <input asp-for="@item.Text" readonly class="form-control" />
 
-        }
-    }
+        <div class="form-group col-md-6">
+            @foreach (var item in Model.Predstavnik)
+            {
+                if (Model.Odjejlenje.UcenikID.ToString() == item.Value)
+                {
+                    <label asp-for="Odjejlenje.Ucenik">Predstavnik:</label>
+                    <input asp-for="@item.Text" readonly class="form-control" />
+
+                }
+            }
         </div>
     </div>
 </form>
+<div id="tabelaUcenika">
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <td>Naziv</td>
-            
-            
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Predstavnik)
-        {
-            <tr>
-                <td>@item.Text</td>
-           </tr>
-        }
+</div>
 
-    </tbody>
-</table>
+<div id="modalPlaceholder">
+
+</div>
+
+
+<script>
+    $(document).ready(function (parametars) {
+
+        $.get("@Url.Action("Index", "AjaxOdjeljenje", new { odjeljenjeId = Model.Odjejlenje.OdjeljenjeId })", function (rezultat, status) {
+
+            $("#tabelaUcenika").html(rezultat);
+        });
+
+    });
+
+   
+
+</script>
 
 

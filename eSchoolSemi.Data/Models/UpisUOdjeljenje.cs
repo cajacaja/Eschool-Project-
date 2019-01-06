@@ -12,10 +12,10 @@ namespace eSchool.Data.Models
 
         public int BrojUDnevniku { get; set; }
 
-        public int? UcenikId { get; set; }
+        public int UcenikId { get; set; }
         public Ucenik Ucenik { get; set; }
 
-        public int? OdjeljenjeId { get; set; }
+        public int OdjeljenjeId { get; set; }
         public Odjeljenje Odjeljenje { get; set; }
 
     }

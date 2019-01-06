@@ -12,10 +12,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
         public int NastavniPlanPredmetID { get; set; }
 
         public int NastavnikID { get; set; }
-        public List<SelectListItem> Nastavnici { get; set; }
-
-        public int OdjeljenjeID { get; set; }
-        public List<SelectListItem> Odjeljenja { get; set; }
+        public List<SelectListItem> Nastavnici { get; set; }     
 
 
     }

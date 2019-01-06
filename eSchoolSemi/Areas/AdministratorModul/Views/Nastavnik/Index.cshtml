@@ -1,43 +1,79 @@
-﻿@model NastavnikIndexVM
+﻿
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
-<a asp-action="DodajNastavnika" class="btn btn-default">Dodaj</a>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Ime i prezime</th>
-            <th>Titula</th>
-            <th>Zvanje</th>
-            <th>Datum zaposljenja</th>
-            <th>Username</th>
-            <th>Password</th>
-            
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var s in Model.Nastavnici)
-        {
-        <tr>
-            <td>@s.ImePrezime</td>
-            <td>@s.Titula</td>
-            <td>@s.Zvanje</td>
-            <td>@s.DatumZaposljenja</td>
-            <td>@s.Username</td>
-            <td>@s.Password</td>
-            <td>
-                <form asp-action="Obrisi" method="post">
-                    <input hidden name="NastavnikID" value="@s.NastavniID" />
-                    <button type="submit" class="btn btn-danger">Obrisi</button>
-                </form>
-            </td>
-            <td>
-                <a asp-action="Uredi" asp-route-id="@s.NastavniID" class="btn btn-info">Uredi</a>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+<div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-5 verti">
+
+                    <input type="text" class="form-control" id="nastavnikValue" placeholder="Pornadji nastavnika" />
+                </div>
+                <div class="col-sm-3">
+
+                    <button id="dugmeID" class="btn btn-info">Pronadji</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-sm-2">
+
+            <button type="button" title="Dodaj" class="btn btn-info" data-toggle="ajax-modal" data-target="#dodajRoditelj" 
+                                            data-url="@Url.Action("DodajNastavnika","Nastavnik")">Dodaj nastavnika!</button>
+        </div>
+
+
+    </div>
+</div>
+
+<br />
+
+
+
+<div id="tabelaN">
+
+</div>
+
+<div id="modalNastavnik">
+
+</div>
+
+<script>
+
+    $(document).ready(function (parametars) {
+
+        $.ajax({
+            url: "@Url.Action("tabelaNastavnici", "Nastavnik")", success: function (result) {
+                $("#tabelaN").html(result);
+            }
+        });
+    });
+
+     $("#dugmeID").click(function (parametars) {
+
+         var searchString = $("#nastavnikValue").val();
+
+
+
+
+        $.ajax({
+            url:"/AdministratorModul/Nastavnik/tabelaNastavnici/?search=" +searchString+"&&sortOrder="+"@ViewData["NameSortParm"]", success: function (result){
+
+                $("#tabelaN").html(result);
+            }
+        });
+
+    });
+
+   
+</script>

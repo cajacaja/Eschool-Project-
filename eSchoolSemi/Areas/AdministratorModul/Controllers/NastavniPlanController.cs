@@ -47,45 +47,99 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         }
 
 
+        public IActionResult DodajPredmetUProgram() {
 
-        public IActionResult DodajPredmet()
-        {
-            Predmet noviPredmet = new Predmet();
+            AnagazmanNaPredmet angazovanje = new AnagazmanNaPredmet
+            {
+                nastavniPlanProgram=_context._NastavniPlan.Select(x=>new SelectListItem {
 
-            return View(noviPredmet);
+                    Value=x.NastavniPlanId.ToString(),
+                    Text=x.Naziv
+                }).ToList(),
+
+                predmet=_context._Predmet.Select(x=>new SelectListItem {
+
+                    Value = x.PredmetId.ToString(),
+                    Text = x.Naziv
+                }).ToList(),
+
+                nastavnik= _context._Nastavnik.Select(x => new SelectListItem
+                {
+
+                    Value = x.KorisnikId.ToString(),
+                    Text = x.Ime+" "+x.Prezime
+                }).ToList()
+
+            };
+
+
+            return View(angazovanje);
+
+
         }
 
-        [HttpPost]
-        public IActionResult DodajPredmet(Predmet novi)
-        {
-            _context._Predmet.Add(novi);
-            _context.SaveChanges();
+        public IActionResult SnimiPlanPredmet(AnagazmanNaPredmet viewModel) {
 
-            return RedirectToAction("Index");
-        }
+            NastavniPlanPredmet noviNastavniPredmet = new NastavniPlanPredmet {
 
-        public IActionResult Obrisi(int PredmetID)
-        {
-            _context._Predmet.Remove(_context._Predmet.Find(PredmetID));
-            _context.SaveChanges();
+                GodinaStudiranja=viewModel.GodinaStudiranja,
+                BrojCasova=viewModel.BrojCasova,
+                NastavniPlanId=viewModel.NastavniPlanProgramID,
+                PredmetId=viewModel.PredmetID
 
-            return RedirectToAction("Index");
-        }
+            };
 
-        //Koje sve predmete ima nastavni plan i program
-        public IActionResult Detalji(int nastavniPlanId)
-        {
-            ListaPredmetaNastavniPlanVM temp = new ListaPredmetaNastavniPlanVM();
-            temp.Naziv = _context._NastavniPlan.FirstOrDefault(x => x.NastavniPlanId == nastavniPlanId).Naziv;
+            _context._NastavniPlanPredmet.Add(noviNastavniPredmet);
 
-            temp.Npp = _context._NastavniPlanPredmet.Where(x => x.NastavniPlanId == nastavniPlanId).ToList();
 
-            temp.Predmeti = _context._Predmet.Select(x => new SelectListItem
+            Angazovan angazovanNastavnik = new Angazovan
             {
 
-                Value = x.PredmetId.ToString(),
-                Text = x.Naziv
-            }).ToList();
+                NastavnikId = viewModel.NastavnikID,
+                NastavniPlanPredmetId = noviNastavniPredmet.NastavniPlanPredmetId
+            };
+
+            _context._Angazovan.Add(angazovanNastavnik);
+
+            _context.SaveChanges();
+
+
+            return RedirectToAction("Index");
+        }
+
+     
+
+
+            //Koje sve predmete ima nastavni plan i program
+            public IActionResult Detalji(int nastavniPlanId)
+        {
+            ListaPredmetaNastavniPlanVM temp = new ListaPredmetaNastavniPlanVM();
+
+            temp.Naziv = _context._NastavniPlan.FirstOrDefault(x => x.NastavniPlanId == nastavniPlanId).Naziv;
+
+            List<NastavniPlanPredmet> nastavniPredmeti = _context._NastavniPlanPredmet.Where(x => x.NastavniPlanId == nastavniPlanId).ToList();
+                     
+
+            temp.Angazovani = new List<ListaPredmetaNastavniPlanVM.Row>();
+
+            foreach (var item in nastavniPredmeti)
+            {
+                temp.Angazovani.Add 
+                (
+                    _context._Angazovan.Where(x => x.NastavniPlanPredmetId == item.NastavniPlanPredmetId).Select                    
+                    (x => new ListaPredmetaNastavniPlanVM.Row
+                    {
+                        AngazovanID=x.AngazovanId,
+                        NazivPredmeta=x.NastavniPlanPredmet.Predmet.Naziv,
+                        BrojCasova=x.NastavniPlanPredmet.BrojCasova,
+                        NazivNastavnika=x.Nastavnik.Ime+" "+x.Nastavnik.Prezime
+
+                    }).First()
+                
+                );
+            }
+
+           
 
 
 
@@ -93,53 +147,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         }
 
 
-        //Opcija da angazuje Nastavnika na predmete koji su na listi
-        //Sada da li je naziv predmeta i zvanje isto? dali da mi to bude provjera?
-
-        public async Task<IActionResult> AnagazujNastavnika(int nastavniPlanPredmetID)
-        {
-            AngazujNastavnikVM nastavnikNaPredmetu =new AngazujNastavnikVM { NastavniPlanPredmetID = nastavniPlanPredmetID };
-
-            NastavniPlanPredmet temp = await _context._NastavniPlanPredmet.FirstOrDefaultAsync(x => x.NastavniPlanPredmetId == nastavniPlanPredmetID);
-
-            //Daj mi sva odjeljenja koja imaju ovaj nastavni plan i predmet tako kad azuriram nastavnika za neko odjeljenje,zelim da ima izbor
-            //odjeljenja koji imaju taj nastavni plan i program
-            List<Odjeljenje> odjeljenjeNPP = await _context._Odjeljenje.Where(x => x.NastavniPlanId == temp.NastavniPlanId).ToListAsync();
-
-
-            nastavnikNaPredmetu.Odjeljenja = odjeljenjeNPP.Select(x => new SelectListItem
-            {
-                Value = x.OdjeljenjeId.ToString(),
-                Text = x.Oznaka
-            }).ToList();
-
-            nastavnikNaPredmetu.Nastavnici =  _context._Nastavnik.Select(x => new SelectListItem
-            {
-                Value = x.KorisnikId.ToString(),
-                Text = x.Titula + "." + x.Ime + " " + x.Prezime
-            }).ToList();
-
-
-            return View(nastavnikNaPredmetu);
-        }
-
-        [HttpPost]
-        public IActionResult AnagazujNastavnika(AngazujNastavnikVM angazuj)
-        {
-            Angazovan angazovan = new Angazovan();
-            angazovan.NastavnikId = angazuj.NastavnikID;
-            angazovan.NastavniPlanPredmetId = angazuj.NastavniPlanPredmetID;
-            angazovan.OdjeljenjeId = angazuj.OdjeljenjeID;
-          
-
-
-
-            _context._Angazovan.Add(angazovan);
-            _context.SaveChanges();
-
-
-            return RedirectToAction("Index");
-        }
+        
 
         public IActionResult ObrisiNastavniPlan(int nastavniPlanId)
         {
@@ -163,6 +171,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
                 {
                     foreach (var item in nastavnici)
                     {
+                        if(item!=null)
                         _context._Angazovan.Remove(_context._Angazovan.Find(item.AngazovanId));
                         
                     }
@@ -193,26 +202,20 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult ObrisiPredmetIzNPP(int nastavniPlanProgramID)
-        {
 
-            NastavniPlanPredmet obrisiPredmet = _context._NastavniPlanPredmet.FirstOrDefault(x => x.NastavniPlanPredmetId == nastavniPlanProgramID);
 
-            Angazovan angazovanNastavnikPredmet = _context._Angazovan.FirstOrDefault(x => x.NastavniPlanPredmetId == obrisiPredmet.NastavniPlanPredmetId);
+        public IActionResult ObrisiPredmet(int id) {
 
-            if (angazovanNastavnikPredmet!=null)
-            {
-                _context._Angazovan.Remove(_context._Angazovan.Find(angazovanNastavnikPredmet.AngazovanId));
-                _context.SaveChanges();
-            }
+            Angazovan obrisiAngazovanog = _context._Angazovan.FirstOrDefault(x => x.AngazovanId == id);
 
-            int? nastavniPlanId = obrisiPredmet.NastavniPlanId;
+            NastavniPlanPredmet obrisiPlanPredmet = _context._NastavniPlanPredmet.FirstOrDefault(x => x.NastavniPlanPredmetId == obrisiAngazovanog.NastavniPlanPredmetId);
 
-            _context._NastavniPlanPredmet.Remove(_context._NastavniPlanPredmet.Find(obrisiPredmet.NastavniPlanPredmetId));
+            _context._NastavniPlanPredmet.Remove(obrisiPlanPredmet);
+
+            _context._Angazovan.Remove(obrisiAngazovanog);
             _context.SaveChanges();
-            
-            //trebam skontat kako pass value prema akciji a da ne bude null kad gore dodje ne znam sad zasto se to desava
-            return View("Index");
+
+            return RedirectToAction("Index");
         }
     }
 }

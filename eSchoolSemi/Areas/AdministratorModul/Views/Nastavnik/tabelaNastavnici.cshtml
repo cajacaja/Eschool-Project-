@@ -1,0 +1,120 @@
+﻿@model eSchoolSemi.Web.Helper.PaginatedList<Nastavnik>
+
+<div class="container-fluid">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th><button id="orderDugme" class="btn btn-link">Ime i prezime</button></th>
+                <th>Titula</th>
+                <th>Zvanje</th>
+                <th>Datum zaposljenja</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Akcija</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>@s.Ime @s.Prezime</td>
+                    <td>@s.Titula</td>
+                    <td>@s.Zvanje</td>
+                    <td>@s.DatumZaposlenja.ToShortDateString()</td>
+                    <td>@s.KorisnickoIme</td>
+                    <td>@s.Lozinka</td>
+                    <td>
+                        <button class="btn btn-info" data-toggle="obrisNastavnik"
+                                data-url="@Url.Action("Obrisi","Nastavnik",new {NastavnikID=s.KorisnikId })">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        <button type="button" title="Detalji" class="btn btn-info" data-toggle="ajax-modal" data-target="#urediNastavnika" data-url="@Url.Action("Uredi","Nastavnik",new {id=s.KorisnikId })">
+                            <span class="glyphicon glyphicon-cog"></span>
+                        </button>
+
+                        <button type="button" title="Detalji" class="btn btn-info" data-toggle="ajax-modal" data-target="#detaljiNastavnika" data-url="@Url.Action("Detalji","Nastavnik",new {nastavnikID=s.KorisnikId })">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                        </button>                   
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<button id="Nazad" class="btn btn-default @prevDisabled">
+    Previous
+</button>
+<button id="Naprijed"
+        class="btn btn-default @nextDisabled">
+    Next
+</button>
+
+<script>
+    $("#Nazad").click(function (parametars) {
+
+        var searchString ="";
+        var Url ="/AdministratorModul/nastavnik/tabelaNastavnici/?search=" +searchString+"&&page=@(Model.PageIndex-1)";
+        $.get(Url, function (rezultat, status) {
+
+            $("#tabelaN").html(rezultat);
+        });
+    });
+
+    
+    $("#Naprijed").click(function (parametars) {
+
+        var searchString ="";
+        var Url ="/AdministratorModul/nastavnik/tabelaNastavnici/?search=" +searchString+"&&page=@(Model.PageIndex+1)";
+        $.get(Url, function (rezultat, status) {
+
+            $("#tabelaN").html(rezultat);
+        });
+    });
+
+    $('button[data-toggle="obrisNastavnik"]').click(function (event) {
+
+        var url = $(this).attr('data-url');
+
+        $.ajax({
+            url: url, success: function (result) {
+                $('#tabelaN').html(result);
+            }
+        });
+    });
+
+    $(function () {
+
+        $('button[data-toggle="ajax-modal"]').click(function (event) {
+
+            var url = $(this).attr('data-url');
+            var placeholder = $('#modalNastavnik');
+
+            $.ajax({
+                url: url, success: function (result) {
+                    placeholder.html(result);
+                    placeholder.find('.modal').modal('show');
+                }
+            });
+
+        });
+    });
+
+    $("#orderDugme").click(function (parametars) {
+
+        var searchString = $("#nastavnikValue").val();
+        var Url="/AdministratorModul/Nastavnik/tabelaNastavnici/?search=" +searchString+"&&sortOrder="+"@ViewData["NameSortParm"]"+"&&page=@(Model.PageIndex)";
+
+        $.get(Url, function (rezultat, status) {
+
+            $("#tabelaN").html(rezultat);
+        });
+
+
+    });
+</script>

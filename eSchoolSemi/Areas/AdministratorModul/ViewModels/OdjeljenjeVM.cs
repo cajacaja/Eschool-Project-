@@ -22,5 +22,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
 
         public List<SelectListItem> NastavniPlan { get; set; }
 
+        public List<SelectListItem> GodinaStudiranja { get; set; }
+
     }
 }

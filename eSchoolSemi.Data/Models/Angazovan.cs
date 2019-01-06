@@ -11,13 +11,14 @@ namespace eSchool.Data.Models
         public int AngazovanId { get; set; }
 
         public int? NastavnikId { get; set; }
-        public Nastavnik Nastavnik { get; set; }
-
-        public int? OdjeljenjeId { get; set; }
-        public Odjeljenje Odjeljenje { get; set; }
+        public Nastavnik Nastavnik { get; set; }    
 
         public int? NastavniPlanPredmetId { get; set; }
         public NastavniPlanPredmet NastavniPlanPredmet { get; set; }
 
+        public static implicit operator List<object>(Angazovan v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

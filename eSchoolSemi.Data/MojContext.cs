@@ -15,6 +15,8 @@ namespace eSchoolSemi.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Odjeljenje>().HasOne(p => p.Raspored).WithOne(i => i.Odjeljenje).HasForeignKey<Raspored>(b => b.OdjeljenjeID);
         }
 
 
@@ -46,6 +48,21 @@ namespace eSchoolSemi.Data
         public DbSet<Administrator> Administrators { get; set; }
 
         public DbSet<AutorizacijskiToken> AutorizacijskiToken { get; set; }
+
+        public DbSet<ObavjestenjeOdjeljenje> ObavjestenjeOdjeljenje { get; set; }
+
+        public DbSet<ZakljucnaOcjena> ZakljucnaOcjena { get; set; }
+
+        public DbSet<Raspored> Raspored { get; set; }
+
+        public DbSet<RasporedDetalj> RasporedDetalj { get; set; }
+
+        public DbSet<Dan> Dan { get; set; }
+
+        public DbSet<PocetakCasa> PocetakCasa { get; set; }
+
+
+
 
     }
 }

@@ -23,8 +23,22 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         public IActionResult Index()
         {
             
-            List<Odjeljenje> novi = _context._Odjeljenje.ToList();
-            return View(novi);
+
+            OdjeljenjeIndexVM listaOdjeljenja = new OdjeljenjeIndexVM
+            {
+
+                Odjeljenja = _context._Odjeljenje.Select(x => new OdjeljenjeIndexVM.Row
+                {
+
+                    OdjeljenjeID = x.OdjeljenjeId,
+                    Oznka=x.Oznaka,
+                    Kapacitet = x.Kapacitet,
+                    Razrednik = x.Razrednik.Ime + " " + x.Razrednik.Prezime,
+                    Predstavnik = x.Ucenik.Ime + " " + x.Ucenik.Prezime
+                }).ToList()
+            };
+
+            return View(listaOdjeljenja);
         }
 
         public IActionResult DodajOdjeljenje()
@@ -119,7 +133,15 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
                     Text = x.Naziv
                 }).ToList();
             }
-            
+
+            if (vm.GodinaStudiranja == null)
+            {
+                vm.GodinaStudiranja = _context._GodinaStudija.Select(x => new SelectListItem
+                {
+                    Value = x.GodinaStudijaId.ToString(),
+                    Text = x.Godina
+                }).ToList();
+            }            
             return vm;
         }
 
@@ -127,7 +149,6 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         [HttpPost]
         public IActionResult Snimi(OdjenjenjeVM vm )
         {
-
            
             _context._Odjeljenje.Add(vm.Odjejlenje);
             _context.SaveChanges();

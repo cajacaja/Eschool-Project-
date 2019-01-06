@@ -33,7 +33,7 @@ namespace eSchoolSemi.Web.Controllers
 
             if (korisnik == null)
             {
-                TempData["error_poruka"] = "pogrešan username ili password";
+                TempData["error_poruka"] = "Pogrešan username ili password";
                 return View("Index", input);
             }
 
@@ -69,5 +69,7 @@ namespace eSchoolSemi.Web.Controllers
 
             return RedirectToAction("Index");
         }
+        
+       
     }
 }
