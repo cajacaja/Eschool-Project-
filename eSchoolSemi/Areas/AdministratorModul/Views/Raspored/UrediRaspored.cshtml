@@ -4,7 +4,7 @@
 }
 
 
-
+<a asp-action="Detalji" asp-controller="Odjeljenje" asp-route-id="@Model.OdjeljenjeId" class="btn btn-danger">Nazad u odjeljenje</a>
 <div class="container-fluid">
     <form asp-action="DodajDetalj" method="post">
         <div class="row">
@@ -36,7 +36,7 @@
 <script>
     $(document).ready(function (parametars) {
 
-        $.get("@Url.Action("CitavRaspored", "Raspored", new { RasporedID = Model.RasporedID })", function (rezultat, status) {
+        $.get("@Url.Action("CitavRasporedUredi", "Raspored", new { RasporedID = Model.RasporedID })", function (rezultat, status) {
 
             $("#raspored").html(rezultat);
         });

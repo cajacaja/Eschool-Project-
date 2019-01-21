@@ -3,26 +3,44 @@
     ViewData["Title"] = "DodajRaspored";
 }
 
-<h2 class="text-center">Dodaj Raspored</h2>
+<div class="modal fade" id="dodajRaspored" tabindex="-1" role="dialog" aria-labelledby="dodajNastavnikLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-center" id="dodajNastavnikLabel">Dodaj nastavnika!</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form asp-action="SnimiRaspored" method="post">
 
-<form asp-action="SnimiRaspored" method="post">
+                        <input asp-for="OdljenjeID" type="hidden" value="@Model.OdljenjeID" class="form-control" />
 
-    <div class="row">
-        <div class="form-group col-md-6 col-md-push-3">
-            <label asp-for="RasporedNaziv">Naziv rasporeda:</label>
-            <input asp-for="RasporedNaziv" type="text" class="form-control" />
+                        <div class="row">
+                            <div class="form-group col-md-6 col-md-push-3">
+                                <label asp-for="OdljenjeID">Odjeljenje</label>
+                                <input asp-for="Oznaka" type="text" value="@Model.Oznaka" class="form-control" disabled />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 col-md-push-3">
+                                <label asp-for="RasporedNaziv">Naziv rasporeda:</label>
+                                <input asp-for="RasporedNaziv" type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <button class="btn btn-info" type="submit">Snimi</button>
+                    </form>
+
+                </div>
+            </div>
+
+           
         </div>
     </div>
-    <div class="row">
-        <div class="form-group col-md-6 col-md-push-3">
-            <label asp-for="OdljenjeID">Odjeljenje</label>
-            <select asp-for="OdljenjeID" asp-items="@Model.Odjeljenja" class="form-control">
-                <option value="">Izaberi odjeljenje...</option>
-            </select>
-        </div>
-    </div>
+</div>
 
-    <div class="col-md-4 col-md-push-5">
-        <button type="submit" class="btn btn-default">Dodaj ucenika!</button>
-    </div>
-</form>
+

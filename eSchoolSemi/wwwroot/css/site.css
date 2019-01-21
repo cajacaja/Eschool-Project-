@@ -1,4 +1,6 @@
-﻿body {
+﻿
+
+body {
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -14,6 +16,10 @@
 .carousel-caption p {
     font-size: 20px;
     line-height: 1.4;
+}
+
+.ui-autocomplete {
+    position:fixed;
 }
 
 /* Make .svg files in the carousel display properly in older browsers */

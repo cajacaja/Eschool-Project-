@@ -8,7 +8,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
     public class ObavjestiIndexVM
     {
 
-        public List<Row> Obavjesti { get; set; }
+        public IQueryable<Row> Obavjesti { get; set; }
 
         public class Row {
 
@@ -23,6 +23,8 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
             public string Autor { get; set; }
 
             public string DatumPostavljanja { get; set; }
+
+            public string  ZaKoga { get; set; }
         }
        
     }

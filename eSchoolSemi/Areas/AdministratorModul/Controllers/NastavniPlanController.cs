@@ -124,15 +124,15 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
             foreach (var item in nastavniPredmeti)
             {
-                temp.Angazovani.Add 
+                temp.Angazovani.Add
                 (
-                    _context._Angazovan.Where(x => x.NastavniPlanPredmetId == item.NastavniPlanPredmetId).Select                    
+                    _context._Angazovan.Where(x => x.NastavniPlanPredmetId == item.NastavniPlanPredmetId).Select
                     (x => new ListaPredmetaNastavniPlanVM.Row
                     {
-                        AngazovanID=x.AngazovanId,
-                        NazivPredmeta=x.NastavniPlanPredmet.Predmet.Naziv,
-                        BrojCasova=x.NastavniPlanPredmet.BrojCasova,
-                        NazivNastavnika=x.Nastavnik.Ime+" "+x.Nastavnik.Prezime
+                        AngazovanID = x.AngazovanId,
+                        NazivPredmeta = x.NastavniPlanPredmet.Predmet.Naziv,
+                        BrojCasova = x.NastavniPlanPredmet.BrojCasova,
+                        NazivNastavnika = (x.Nastavnik != null) ? x.Nastavnik.Ime + " " + x.Nastavnik.Prezime : "Nastavnik izbrisan"
 
                     }).First()
                 

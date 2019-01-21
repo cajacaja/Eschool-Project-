@@ -16,8 +16,8 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
         public List<SelectListItem> Ucenik { get; set; } //ono iz cega se bira
 
         public int OdjeljenjeId { get; set; }
-        public List<SelectListItem> Odjeljenja { get; set; }
-        
+        public string Oznaka { get; set; }
+
 
     }
 }

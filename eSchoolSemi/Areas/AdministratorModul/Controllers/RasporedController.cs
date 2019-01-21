@@ -25,18 +25,21 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             return View(listaRasporeda);
         }
 
-        public IActionResult DodajRaspored()
+        public IActionResult DodajRaspored(int OdjeljenjeId)
         {
-            RasporedDodajVM noviRaspored = new RasporedDodajVM();
+            var Odjeljenje = _context._Odjeljenje.First(x => x.OdjeljenjeId == OdjeljenjeId);
 
-            noviRaspored.Odjeljenja = _context._Odjeljenje.Select(x => new SelectListItem
-            {
-                Value = x.OdjeljenjeId.ToString(),
-                Text = x.Oznaka
+            RasporedDodajVM noviRaspored = new RasporedDodajVM {
 
-            }).ToList();
+                OdljenjeID=Odjeljenje.OdjeljenjeId,
+                Oznaka=Odjeljenje.Oznaka
 
-            return View(noviRaspored);
+            };
+
+            
+           
+
+            return PartialView(noviRaspored);
         }
 
 
@@ -52,7 +55,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             _context.Raspored.Add(rasporedZaSnimit);
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Detalji", "Odjeljenje",new { id =obj.OdljenjeID});
         }
 
 
@@ -63,6 +66,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             RasporedDetaljVM viewModel = new RasporedDetaljVM
             {
                 RasporedID = raspored.RasporedID,
+                OdjeljenjeId=raspored.OdjeljenjeID,
 
                 Predmet = _context._Predmet.Select(x => new SelectListItem {
 
@@ -142,6 +146,24 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
                     Predmet=x.Predmet.Naziv,
                     Dan=x.Dan.Naziv,
                     PocetakCasa=x.PocetakCasa.Pocetak
+                }).ToList()
+            };
+
+            return PartialView(listaPredmeta);
+        }
+
+        public IActionResult CitavRasporedUredi(int RasporedID)
+        {
+
+            PregledRasporedVM listaPredmeta = new PregledRasporedVM
+            {
+
+                listaPredmeta = _context.RasporedDetalj.Where(x => x.RasporedID == RasporedID).
+                Select(x => new PregledRasporedVM.Row
+                {
+                    Predmet = x.Predmet.Naziv,
+                    Dan = x.Dan.Naziv,
+                    PocetakCasa = x.PocetakCasa.Pocetak
                 }).ToList()
             };
 

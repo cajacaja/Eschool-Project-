@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System;
 
@@ -201,6 +203,10 @@ namespace eSchoolSemi.Data.Migrations
 
                     b.Property<string>("Oznaka");
 
+                    b.Property<bool>("Prebacen");
+
+                    b.Property<int?>("RazredID");
+
                     b.Property<int?>("RazrednikId");
 
                     b.Property<int?>("UcenikID");
@@ -210,6 +216,8 @@ namespace eSchoolSemi.Data.Migrations
                     b.HasIndex("GodinaStudijaId");
 
                     b.HasIndex("NastavniPlanId");
+
+                    b.HasIndex("RazredID");
 
                     b.HasIndex("RazrednikId");
 
@@ -499,6 +507,20 @@ namespace eSchoolSemi.Data.Migrations
                     b.ToTable("RasporedDetalj");
                 });
 
+            modelBuilder.Entity("eSchoolSemi.Data.Models.Razred", b =>
+                {
+                    b.Property<int>("RazredId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BrojRazreda");
+
+                    b.Property<string>("OpisRazreda");
+
+                    b.HasKey("RazredId");
+
+                    b.ToTable("Razred");
+                });
+
             modelBuilder.Entity("eSchoolSemi.Data.Models.ZakljucnaOcjena", b =>
                 {
                     b.Property<int>("ZakljucnaOcjenaID")
@@ -642,6 +664,10 @@ namespace eSchoolSemi.Data.Migrations
                     b.HasOne("eSchool.Data.Models.NastavniPlan", "NastavniPlan")
                         .WithMany()
                         .HasForeignKey("NastavniPlanId");
+
+                    b.HasOne("eSchoolSemi.Data.Models.Razred", "Razred")
+                        .WithMany()
+                        .HasForeignKey("RazredID");
 
                     b.HasOne("eSchool.Data.Models.Nastavnik", "Razrednik")
                         .WithMany()

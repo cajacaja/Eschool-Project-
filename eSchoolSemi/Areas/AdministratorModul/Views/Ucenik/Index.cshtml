@@ -23,7 +23,7 @@
             <div class="form-group">
                 <div class="col-sm-5 verti">
 
-                    <input type="text" class="form-control" id="ucenikValue" placeholder="Pornadji ucenika" />
+                    <input type="text" class="form-control" id="ucenikValue"  placeholder="Pornadji ucenika" />
                 </div>
                 <div class="col-sm-3">
 
@@ -43,28 +43,63 @@
 
             @Html.Partial("~/Areas/AdministratorModul/Views/Ucenik/DodajUcenika.cshtml", ucenik)
 
+            
+
         </div>
-        
+
+        <div class="col-sm-2">
+            <button type="button" title="Upisi" class="btn btn-info" data-toggle="ajax-modal" data-target="#upisiUcenika" data-url="@Url.Action("DodajUcenikaOdlj","Ucenik")">Upisi ucenika!</button>
+        </div>
 
     </div>
 </div>
 
 <br />
 
-<div id="test"></div>
+<div id="test" data-table="ajaxDiv"></div>
 <div id="modalPlaceholder"></div>
 
 
 <script>
 
-    $(document).ready(function (parametars) { 
+    $(document).ready(function (parametars) {
 
         $.ajax({
             url: "@Url.Action("_tabela", "Ucenik")", success: function (result) {
                 $("#test").html(result);
             }
         });
+
+
+
+
+
+
     });
+
+
+
+
+    $("#ucenikValue").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "@Url.Action("nazivUcenika", "Ucenik")",
+                type: "POST",
+                dataType: "json",
+                data: { Prefix: request.term },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.text, value: item.text };
+                    }))
+
+                }
+            })
+        }, error: function (xhr, status, error) {
+            alert("Error");
+        },
+        minLength: 2
+    });
+
 
     
 
@@ -74,10 +109,10 @@
         var searchString = $("#ucenikValue").val();
 
 
-        
+
 
         $.ajax({
-            url:"/AdministratorModul/Ucenik/_tabela/?search=" +searchString+"&&sortOrder="+"@ViewData["NameSortParm"]", success: function (result){
+            url:"/AdministratorModul/Ucenik/_tabela/?searchString=" +searchString, success: function (result){
 
                 $("#test").html(result);
             }

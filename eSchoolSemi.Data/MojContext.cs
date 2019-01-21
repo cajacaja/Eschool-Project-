@@ -17,6 +17,7 @@ namespace eSchoolSemi.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Odjeljenje>().HasOne(p => p.Raspored).WithOne(i => i.Odjeljenje).HasForeignKey<Raspored>(b => b.OdjeljenjeID);
+           
         }
 
 
@@ -60,6 +61,8 @@ namespace eSchoolSemi.Data
         public DbSet<Dan> Dan { get; set; }
 
         public DbSet<PocetakCasa> PocetakCasa { get; set; }
+
+        public DbSet<Razred> Razred { get; set; }
 
 
 

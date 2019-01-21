@@ -14,8 +14,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
+
+
 namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 {
+    
+
     [Area("AdministratorModul")]
     [Autorizacija(false, false, false, true)]
     public class UcenikController : Controller
@@ -26,11 +30,13 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         public UcenikController(MojContext context) => _context = context;
 
         public string sortFilter = "empty";
+       
 
         public IActionResult Index()
         {
            
-                     
+
+            
 
 
             UcenikDodajVM vm = new UcenikDodajVM();
@@ -38,44 +44,148 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             
 
 
+
             return View();
         }
 
-        public async Task<IActionResult> _tabela(string sortOrder, string currentFilter, string search, int? page) {
+        
 
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "ime_desc" : "";
+        public async Task<IActionResult> _tabela(string sortOrder,string currentFilter,string searchString,int? page) {
+
             
-            
-            
-           
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : ""; 
+
             IQueryable<Ucenik> listaUcenika = from x in _context._Ucenik
                                               select x;
             
 
-            if (!String.IsNullOrEmpty(search))
+            if (!String.IsNullOrEmpty(searchString))
             {
-
-                listaUcenika = listaUcenika.Where(x => x.Prezime.Contains(search) || x.Ime.Contains(search));
+                           
+               
+                listaUcenika = listaUcenika.Where(x => (x.Ime + x.Prezime).Contains(searchString) ||(x.Prezime +" "+ x.Ime).Contains(searchString));
             }
 
+           
 
-            switch (sortOrder)
-            {
-                case "ime_desc":
-                    listaUcenika = listaUcenika.OrderByDescending(x => x.Prezime);
-                    break;
-                default:
-                    listaUcenika = listaUcenika.OrderBy(x => x.Prezime);
-                    break;
+                switch (sortOrder)
+                {
+                    case "name_desc":
+                        listaUcenika = listaUcenika.OrderByDescending(x => x.Prezime);
+                        break;
+                    default:
+                        listaUcenika = listaUcenika.OrderBy(x => x.Prezime);
+                        break;
+                }
+
+            
+            
+
+
+
+
+           
+
+
+
+
+            int pageSize = 3;
+            return PartialView(await PaginatedList<Ucenik>.CreateAsync(listaUcenika.AsNoTracking(), page ?? 1, pageSize));
+
+        }
+
+        public IActionResult DodajUcenikaOdlj() {
+
+
+            OdjeljenjeUcenikVm dodavanjeUcenik = new OdjeljenjeUcenikVm();
+                      
+
+            return PartialView(DefaultVM(dodavanjeUcenik));
+        }
+
+        public JsonResult vratiOdjlejenje(int GodinaID, int RazredID) {
+
+
+             var odabranaOdljenja = _context._Odjeljenje.Where(x => x.GodinaStudijaId == GodinaID && x.RazredID == RazredID && _context._UpisUOdjeljenje.Where(s=>s.OdjeljenjeId==x.OdjeljenjeId).Count()<x.Kapacitet).
+                                            Select(x => new SelectListItem {
+                                                Value=x.OdjeljenjeId.ToString(),
+                                                Text=x.Oznaka
+
+                                            }).ToList();
+
+
+            return Json(odabranaOdljenja);
+        }
+
+        public IActionResult snimiUpis(int UcenikId,int OdjeljenjeId) {
+
+
+            if (UcenikId != 0 && OdjeljenjeId != 0) { 
+
+            UpisUOdjeljenje noviUpis = new UpisUOdjeljenje {
+
+                UcenikId = UcenikId,
+                OdjeljenjeId = OdjeljenjeId,
+                BrojUDnevniku = 0
+            };
+
+            _context._UpisUOdjeljenje.Add(noviUpis);
+            _context.SaveChanges();
+
+            IEnumerable<UpisUOdjeljenje> listaUcenika = _context._UpisUOdjeljenje.Where(x => x.OdjeljenjeId == OdjeljenjeId).Include(x => x.Ucenik).ToList();
+
+            listaUcenika = listaUcenika.OrderBy(x => x.Ucenik.Prezime);
+
+            int brojac = 1;
+            foreach (var ucenik in listaUcenika) {
+
+                ucenik.BrojUDnevniku = brojac;
+                brojac++;
 
             }
 
+           
+            _context.SaveChanges();
+
+            }
+
+            return RedirectToAction(nameof(Index));
+
+        }
+
+
+
+
+        public JsonResult nazivUcenika(string Prefix) {
+
+            List<SelectListItem> ucenik = _context._Ucenik.Where(x => (x.Ime + " " + x.Prezime).StartsWith(Prefix)||( x.Prezime + " " + x.Ime).StartsWith(Prefix)).Select(x => new SelectListItem
+            {
+
+                Value = x.KorisnikId.ToString(),
+                Text = x.Ime + "" + x.Prezime
+            }).ToList();
             
 
            
-            int pageSize = 5;
-            return PartialView(await PaginatedList<Ucenik>.CreateAsync(listaUcenika.AsNoTracking(), page ?? 1, pageSize));
 
+            return Json(ucenik);
+        }
+
+
+        public JsonResult nazivRoditelja(string Prefix)
+        {
+
+            List<SelectListItem> ucenik = _context._Roditelj.Where(x => (x.Ime + " " + x.Prezime).StartsWith(Prefix) || (x.Prezime + " " + x.Ime).StartsWith(Prefix)).Select(x => new SelectListItem
+            {
+
+                Value = x.KorisnikId.ToString(),
+                Text = x.Prezime + " " + x.Ime
+            }).ToList();
+
+
+
+
+            return Json(ucenik);
         }
 
         public IActionResult DodajUcenika()
@@ -212,6 +322,41 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             }
 
             
+
+            return vm;
+        }
+
+        public OdjeljenjeUcenikVm DefaultVM(OdjeljenjeUcenikVm vm)
+        {
+
+
+
+            vm.Ucenici = _context._Ucenik.Where(x => !_context._UpisUOdjeljenje.Any(s => s.UcenikId == x.KorisnikId)).Select(x => new SelectListItem
+            {
+
+                Value = x.KorisnikId.ToString(),
+                Text = x.Prezime + " " + x.Ime
+
+            }).ToList();
+
+            vm.GodineStudija = _context._GodinaStudija.Select(x => new SelectListItem
+            {
+
+                Value = x.GodinaStudijaId.ToString(),
+                Text = x.Godina
+
+            }).ToList();
+
+            vm.Razredi = _context.Razred.Select(x => new SelectListItem
+            {
+
+                Value = x.RazredId.ToString(),
+                Text = x.OpisRazreda
+
+            }).ToList();
+
+
+
 
             return vm;
         }
@@ -383,72 +528,10 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
             return View(detalji);
         }
-        #region Dodavanje ucenika u odjeljenje
-        public IActionResult DodajUOdjeljenje()
-         {
-            UcenikOdjeljenje ucenik = new UcenikOdjeljenje();
+        
+        
 
-             ucenik.Ucenik =_context._Ucenik.Select(x => new SelectListItem
-             {
-                 Value = x.KorisnikId.ToString(),
-                 Text = x.Prezime + " " + x.Ime
-             }).ToList();
-
-
-            //ucenik.Ucenik = _context._Ucenik.ToList();
-           
-
-            ucenik.Odjeljenja = _context._Odjeljenje.Select(x => new SelectListItem
-             {
-                Value = x.OdjeljenjeId.ToString(),
-                Text = x.Oznaka
-            }).ToList();
-
-           
-
-
-            return PartialView(ucenik);
-        }
-
-        [HttpPost]
-        public IActionResult SnimiOdjeljenje(UcenikOdjeljenje vm)
-        {
-
-            
-            
-            UpisUOdjeljenje noviUpis = new UpisUOdjeljenje
-            {
-                BrojUDnevniku = vm.BrojUdnevniku,
-                OdjeljenjeId=vm.OdjeljenjeId,
-                UcenikId=vm.UcenikId
-                
-            };
-
-            
-
-            _context._UpisUOdjeljenje.Add(noviUpis);
-            _context.SaveChanges();
-
-            IEnumerable<UpisUOdjeljenje> listaUcenika = _context._UpisUOdjeljenje.Where(x => x.OdjeljenjeId == vm.OdjeljenjeId).Include(x=>x.Ucenik).ToList();
-
-            listaUcenika = listaUcenika.OrderBy(x => x.Ucenik.Prezime);
-
-            int brojac = 1;
-
-            foreach (var ucenik in listaUcenika)
-            {
-                ucenik.BrojUDnevniku = brojac;
-                brojac++;
-            }
-
-            brojac = 1;
-
-            _context.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        #endregion
+       
 
         #region Provjera view modela za dodavanje ucenika
         public IActionResult ProvjeriRoditelj(string Roditelj)
@@ -545,6 +628,8 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             return Json(true);
         }
         #endregion
+
+       
     }
 
 

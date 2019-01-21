@@ -20,7 +20,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         private MojContext _context;
         public NastavnikController(MojContext context) => _context = context;
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
 
             
@@ -56,7 +56,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             if (!String.IsNullOrEmpty(search))
             {
 
-                ListaNastavnika = ListaNastavnika.Where(x => x.Prezime.Contains(search) || x.Ime.Contains(search));
+                ListaNastavnika = ListaNastavnika.Where(x => (x.Ime +x.Prezime).Contains(search) || (x.Prezime + " " + x.Ime).Contains(search));
             }
 
             switch (sortOrder)
@@ -73,6 +73,22 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             int pageSize = 10;
             return PartialView(await PaginatedList<Nastavnik>.CreateAsync(ListaNastavnika.AsNoTracking(), page ?? 1, pageSize));
 
+        }
+
+        public JsonResult nazivNastavnika(string Prefix)
+        {
+
+            List<SelectListItem> nastavnik = _context._Nastavnik.Where(x => (x.Ime + " " + x.Prezime).StartsWith(Prefix) || (x.Prezime + " " + x.Ime).StartsWith(Prefix)).Select(x => new SelectListItem
+            {
+
+                Value = x.KorisnikId.ToString(),
+                Text = x.Prezime + " " + x.Ime
+            }).ToList();
+
+
+
+
+            return Json(nastavnik);
         }
 
         public IActionResult DodajNastavnika()
@@ -143,6 +159,19 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         public IActionResult Obrisi(int NastavnikID)
         {
 
+            Angazovan angazovanNastavnik = _context._Angazovan.FirstOrDefault(x => x.NastavnikId == NastavnikID);
+
+            if (angazovanNastavnik!=null)
+            {
+
+
+
+
+                angazovanNastavnik.NastavnikId = null;
+                _context._Angazovan.Update(angazovanNastavnik);                
+                _context.SaveChanges();
+                
+            }
 
 
             Odjeljenje odjeljenje = _context._Odjeljenje.Where(x => x.RazrednikId == NastavnikID).FirstOrDefault();

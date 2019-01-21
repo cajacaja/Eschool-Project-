@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using eSchool.Data.Models;
@@ -24,26 +25,103 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         public IActionResult Index()
         {
-            
+            ObavjestFilterVm filter = new ObavjestFilterVm();
 
-            ObavjestiIndexVM obavjestiIndexVM = new ObavjestiIndexVM {
+            filter.TipObavjesti = _context._TipObavijesti.Select(x => new SelectListItem
+            {
 
-                Obavjesti=_context._Obavjestenje.Select(x=>new ObavjestiIndexVM.Row {
+                Value = x.TipObavijestiId.ToString(),
+                Text = x.Tip
+            }).ToList();
 
-                    ObavjestID=x.ObavjestenjeId,
-                    Naslov=x.Naslov,
-                    Sadrzaj=x.Sadrzaj,
-                    TipObavjesti=x.TipObavijesti.Tip,
-                    Autor=(x.AdministatorID==0)?x.Nastavnik.Ime+" "+x.Nastavnik.Prezime:"Administracija",                                                
-                    DatumPostavljanja=x.DatumObavjestenja.ToLongDateString()
+            filter.Nastavnik= _context._Nastavnik.Select(x => new SelectListItem
+            {
+
+                Value = x.KorisnikId.ToString(),
+                Text = x.Ime+" "+x.Prezime
+            }).ToList();
+
+            filter.DatumDo = DateTime.Now;
+            filter.DatumOd = DateTime.Now;
 
 
-                }).ToList()
+
+
+
+
+            return View(filter);
+        }
+
+        public async Task<IActionResult> ObavjestiAjax(string Naslov,int? NastavnikID, int? Tip, DateTime? DatumOd, DateTime? DatumDo, int? page) {
+
+
+
+            ObavjestiIndexVM obavjestiIndexVM = new ObavjestiIndexVM
+            {
+
+
+                Obavjesti = from x in _context._Obavjestenje
+                            join s in _context._TipObavijesti on x.TipObavijestiId equals s.TipObavijestiId
+                            join p in _context._Nastavnik on x.NastavnikID equals p.KorisnikId into ps
+                            from p in ps.DefaultIfEmpty()
+                            select new ObavjestiIndexVM.Row
+                            {
+                                ObavjestID = x.ObavjestenjeId,
+                                Naslov = x.Naslov,
+                                Sadrzaj = x.Sadrzaj,
+                                TipObavjesti = s.Tip,
+                                DatumPostavljanja = x.DatumObavjestenja.ToLongDateString(),
+                                Autor = (x.NastavnikID == null) ? "Administracija" :p.Ime+' '+p.Prezime
+
+                            }
             };
 
 
+            if (!String.IsNullOrEmpty(Naslov))
+            {
 
-            return View(obavjestiIndexVM);
+                obavjestiIndexVM.Obavjesti = obavjestiIndexVM.Obavjesti.Where(x => x.Naslov.Contains(Naslov));
+            }
+
+
+            if (NastavnikID != null)
+            {
+
+                var nastavnikSearch = _context._Nastavnik.First(x => x.KorisnikId == NastavnikID);
+
+                string Naziv = nastavnikSearch.Ime + " " + nastavnikSearch.Prezime;
+
+                obavjestiIndexVM.Obavjesti = obavjestiIndexVM.Obavjesti.Where(x => x.Autor == Naziv);
+
+            }
+
+            if (Tip != null)
+            {
+                TipObavijesti temp = _context._TipObavijesti.First(x => x.TipObavijestiId == Tip);
+
+                obavjestiIndexVM.Obavjesti = obavjestiIndexVM.Obavjesti.Where(x => x.TipObavjesti == temp.Tip);
+
+            }
+
+            if (DatumOd!=null) {
+
+               
+                
+                obavjestiIndexVM.Obavjesti = obavjestiIndexVM.Obavjesti.Where(x =>DateTime.Parse(x.DatumPostavljanja)>= DatumOd);
+            }
+
+            if (DatumDo != null)
+            {
+
+               
+
+                obavjestiIndexVM.Obavjesti = obavjestiIndexVM.Obavjesti.Where(x => DateTime.Parse(x.DatumPostavljanja) >= DatumDo);
+            }
+
+            obavjestiIndexVM.Obavjesti = obavjestiIndexVM.Obavjesti.OrderByDescending(x => DateTime.Parse(x.DatumPostavljanja));
+
+            int pageSize = 8;
+            return PartialView(await PaginatedList<ObavjestiIndexVM.Row>.CreateAsync(obavjestiIndexVM.Obavjesti.AsNoTracking(), page ?? 1, pageSize));
         }
 
         public IActionResult DodajObavjest()
@@ -81,11 +159,11 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
             Obavjestenje obavjest = new Obavjestenje {
 
-                Naslov=obj.Naslov,
-                Sadrzaj=obj.Sadrzaj,
-                TipObavijestiId=obj.TipObavjestiID,
-                AdministatorID=admin.KorisnikId,
-                DatumObavjestenja=DateTime.Today
+                Naslov = obj.Naslov,
+                Sadrzaj = obj.Sadrzaj,
+                TipObavijestiId = obj.TipObavjestiID,
+                AdministatorID = admin.KorisnikId,
+                DatumObavjestenja = DateTime.Today
             };
 
             
@@ -134,6 +212,17 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
             Nastavnik nastavnik = _context._Nastavnik.FirstOrDefault(x => x.KorisnikId == obavjestenje.NastavnikID);
 
+            var odljenjenja = _context.ObavjestenjeOdjeljenje.Where(x => x.ObavjestenjeID == ObavjestID);
+
+            var temp = from x in _context._Odjeljenje
+                       join s in odljenjenja on x.OdjeljenjeId equals s.OdjeljenjeID
+                       select x.Oznaka;
+
+
+
+
+
+
             ObavjestiIndexVM.Row obavjest = new ObavjestiIndexVM.Row {
 
                 Naslov = obavjestenje.Naslov,
@@ -142,9 +231,92 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
                 Autor = (nastavnik != null) ? nastavnik.Ime + " " + nastavnik.Prezime : "Administracija",
                 DatumPostavljanja = obavjestenje.DatumObavjestenja.ToLongDateString()
 
-            };   
+            };
+
+            foreach (var item in temp)
+            {
+                obavjest.ZaKoga+=item+" ";
+            }
 
             return View(obavjest);
+        }
+
+
+        public IActionResult Uredi(int ObavjestID)
+        {
+
+            Obavjestenje Obavjest = _context._Obavjestenje.First(x => x.ObavjestenjeId == ObavjestID);
+
+            
+
+            if (Obavjest == null)
+            {
+                return NotFound();
+            }           
+
+
+
+            DodajObavjestVM urediObavjest = new DodajObavjestVM
+            {
+                ObavjestID=Obavjest.ObavjestenjeId,
+                Naslov = Obavjest.Naslov,
+                Sadrzaj = Obavjest.Sadrzaj,
+                TipObavjestiID=Obavjest.TipObavijestiId,             
+                
+                
+
+                TipObavjesti = _context._TipObavijesti.Select(x => new SelectListItem
+                {
+
+
+                    Value = x.TipObavijestiId.ToString(),
+                    Text = x.Tip
+
+                }).ToList()
+            };
+
+            return View(urediObavjest);
+        }
+
+
+        public IActionResult SnimiUredjeno(DodajObavjestVM obj) {
+
+            Obavjestenje obavjest = _context._Obavjestenje.First(x => x.ObavjestenjeId == obj.ObavjestID);
+
+            obavjest.Naslov = obj.Naslov;
+            obavjest.TipObavijestiId = obj.TipObavjestiID;
+            obavjest.Sadrzaj = obj.Sadrzaj;
+
+            _context._Obavjestenje.Update(obavjest);
+            _context.SaveChanges();
+
+
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Obrisi(int ObavjestId) {
+
+            List<ObavjestenjeOdjeljenje> obavjestOdljenjenja = _context.ObavjestenjeOdjeljenje.Where(x => x.ObavjestenjeID == ObavjestId).ToList();
+
+            if (obavjestOdljenjenja!=null)
+            {
+                foreach (var obavjest in obavjestOdljenjenja)
+                {
+                    _context.ObavjestenjeOdjeljenje.Remove(obavjest);
+                }
+
+                _context.SaveChanges();
+            }
+
+
+            var obavjestZaIzbrisat = _context._Obavjestenje.First(x => x.ObavjestenjeId == ObavjestId);
+
+            _context._Obavjestenje.Remove(obavjestZaIzbrisat);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(ObavjestiAjax));
         }
 
     }

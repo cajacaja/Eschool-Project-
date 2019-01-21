@@ -9,6 +9,7 @@ using eSchoolSemi.Web.Areas.AdministratorModul.ViewModels;
 using eSchoolSemi.Web.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 {
@@ -20,25 +21,35 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         private MojContext _context;
         public OdjeljenjeController(MojContext context) => _context = context;
 
+
+        
+
         public IActionResult Index()
         {
-            
 
-            OdjeljenjeIndexVM listaOdjeljenja = new OdjeljenjeIndexVM
-            {
+            FilterOdjeljenjeVM noviFilter = new FilterOdjeljenjeVM {
 
-                Odjeljenja = _context._Odjeljenje.Select(x => new OdjeljenjeIndexVM.Row
+                GodineStudija=_context._GodinaStudija.Select(x=>new SelectListItem {
+
+                    Value=x.GodinaStudijaId.ToString(),
+                    Text=x.Godina
+                }).ToList(),
+
+                Razred = _context.Razred.Select(x => new SelectListItem
                 {
 
-                    OdjeljenjeID = x.OdjeljenjeId,
-                    Oznka=x.Oznaka,
-                    Kapacitet = x.Kapacitet,
-                    Razrednik = x.Razrednik.Ime + " " + x.Razrednik.Prezime,
-                    Predstavnik = x.Ucenik.Ime + " " + x.Ucenik.Prezime
-                }).ToList()
+                    Value = x.RazredId.ToString(),
+                    Text = x.OpisRazreda
+                }).ToList(),
+
+                
+
+                
             };
 
-            return View(listaOdjeljenja);
+
+
+            return View(noviFilter);
         }
 
         public IActionResult DodajOdjeljenje()
@@ -46,41 +57,104 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             OdjenjenjeVM vm = new OdjenjenjeVM();
 
 
-            return View(GetDefaultVM(vm));
+            return PartialView(GetDefaultVM(vm));
+        }
+
+
+        public async Task<IActionResult> OdljenjenjeTabela(int godinaStudijaId, int? razredID,bool? imalRazrednika,bool? imalPredstvnika, int? page)
+        {
+
+            var odjeljenjeLista = from x in _context._Odjeljenje
+                           join r in _context._Nastavnik on x.RazrednikId equals r.KorisnikId into ps
+                           from r in ps.DefaultIfEmpty() 
+                           join p in _context._Ucenik on x.UcenikID equals p.KorisnikId into pl
+                           from p in pl.DefaultIfEmpty()
+                           select new { x.OdjeljenjeId, x.Oznaka, x.Kapacitet, x.GodinaStudijaId, x.RazredID, x.RazrednikId,x.UcenikID,r,p };
+
+            
+
+            if (godinaStudijaId!=0)
+            {
+                odjeljenjeLista = odjeljenjeLista.Where(x => x.GodinaStudijaId == godinaStudijaId);
+            }
+
+            if (razredID != null)
+            {
+                odjeljenjeLista = odjeljenjeLista.Where(x => x.RazredID == razredID);
+            }
+
+            if (imalRazrednika != null) {
+                odjeljenjeLista = (imalRazrednika ?? false) ? odjeljenjeLista.Where(x => x.RazrednikId != null) : odjeljenjeLista.Where(x => x.RazrednikId == null);
+            }
+
+            if (imalPredstvnika != null)
+            {
+                odjeljenjeLista = (imalPredstvnika ?? false) ? odjeljenjeLista.Where(x => x.UcenikID != null) : odjeljenjeLista.Where(x => x.UcenikID == null);
+            }
+
+
+
+
+            OdjeljenjeIndexVM listaOdjeljenja = new OdjeljenjeIndexVM
+            {
+
+                Odjeljenja = odjeljenjeLista.Select(x => new OdjeljenjeIndexVM.Row
+                {
+
+                    OdjeljenjeID = x.OdjeljenjeId,
+                    Oznka = x.Oznaka,
+                    Kapacitet = x.Kapacitet,
+                    Razrednik = x.r.Ime + " " + x.r.Prezime,
+                    Predstavnik = x.p.Ime + " " + x.p.Prezime
+                })
+            };
+
+            int pageSize = 15;
+            return PartialView(await PaginatedList<OdjeljenjeIndexVM.Row>.CreateAsync(listaOdjeljenja.Odjeljenja.AsNoTracking(), page ?? 1, pageSize));
         }
 
         public IActionResult Uredi(int id)
         {
-            OdjenjenjeVM odjeljenjeUredi = new OdjenjenjeVM();
+            
 
-            odjeljenjeUredi.Odjejlenje = _context._Odjeljenje.Where(x => x.OdjeljenjeId == id).FirstOrDefault();
-            GetDefaultVM(odjeljenjeUredi);
+            var odjeljenje = _context._Odjeljenje.Where(x => x.OdjeljenjeId == id).FirstOrDefault();
 
-            List<UpisUOdjeljenje> upisi = _context._UpisUOdjeljenje.Where(x => x.OdjeljenjeId == id).ToList();
-            List<Ucenik> ucenici = new List<Ucenik>();
+            OdjenjenjeVM odjeljenjeUredi = new OdjenjenjeVM {
 
-            foreach (var item in upisi)
-            {
-                ucenici.Add(_context._Ucenik.Where(x => x.KorisnikId == item.UcenikId).FirstOrDefault());
-            }
-
-            odjeljenjeUredi.Predstavnik = ucenici.Select(x => new SelectListItem
-            { Value = x.KorisnikId.ToString(), Text = x.Ime + " " + x.Prezime }).ToList();
-
-
-            odjeljenjeUredi.NastavniPlan = _context._NastavniPlan.Select(x => new SelectListItem
-            {
-                Value = x.NastavniPlanId.ToString(),
-                Text = x.Naziv
-            }).ToList();
+                OdjeljenjeID = odjeljenje.OdjeljenjeId,
+                Oznaka = odjeljenje.Oznaka,
+                Kapacitet = odjeljenje.Kapacitet,
+                UcenikID=odjeljenje.UcenikID??0,
+                RazredID = odjeljenje.RazredID ?? 0,
+                NastavnikID = odjeljenje.RazrednikId ?? 0,
+                NastavniPlanId = odjeljenje.NastavniPlanId??0,
+                GodinaStudiranjaId = odjeljenje.GodinaStudijaId??0
+                
+            };
+                      
 
 
-            return View(odjeljenjeUredi);
+            return View(GetDefaultVM(odjeljenjeUredi));
         }
 
-        public IActionResult SnimiUredjeno(OdjenjenjeVM uredi)
+        public IActionResult SnimiUredjeno(OdjenjenjeVM vm)
         {
-            _context._Odjeljenje.Update(uredi.Odjejlenje);
+
+            Odjeljenje novoOdljeljenje = _context._Odjeljenje.FirstOrDefault(x => x.OdjeljenjeId == vm.OdjeljenjeID);
+
+
+            novoOdljeljenje.Oznaka = vm.Oznaka;
+            novoOdljeljenje.Kapacitet = vm.Kapacitet;
+            novoOdljeljenje.RazredID = vm.RazredID;
+            novoOdljeljenje.RazrednikId = vm.NastavnikID;
+            novoOdljeljenje.NastavniPlanId = vm.NastavniPlanId;
+            novoOdljeljenje.GodinaStudijaId = vm.GodinaStudiranjaId;
+            if (vm.UcenikID != 0) { novoOdljeljenje.UcenikID = vm.UcenikID; }
+             
+
+            
+
+            _context.Update(novoOdljeljenje);
             _context.SaveChanges();
          
 
@@ -89,36 +163,57 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
 
         public IActionResult Detalji(int id)
         {
-            OdjenjenjeVM odjeljenjeUredi = new OdjenjenjeVM();
+            var odjeljenje = _context._Odjeljenje.Where(x => x.OdjeljenjeId == id).FirstOrDefault();
 
-            odjeljenjeUredi.Odjejlenje = _context._Odjeljenje.Where(x => x.OdjeljenjeId == id).FirstOrDefault();
-            GetDefaultVM(odjeljenjeUredi);
+            var raspored = _context.Raspored.FirstOrDefault(x => x.OdjeljenjeID == odjeljenje.OdjeljenjeId);
 
-            List<UpisUOdjeljenje> upisi = _context._UpisUOdjeljenje.Where(x => x.OdjeljenjeId == id).ToList();
-            List<Ucenik> ucenici = new List<Ucenik>();
-
-            foreach (var item in upisi)
+            OdjenjenjeVM odjeljenjeUredi = new OdjenjenjeVM
             {
-                ucenici.Add(_context._Ucenik.Where(x => x.KorisnikId == item.UcenikId).FirstOrDefault());
+
+                OdjeljenjeID = odjeljenje.OdjeljenjeId,
+                Oznaka = odjeljenje.Oznaka,
+                Kapacitet = odjeljenje.Kapacitet,
+                RazredID = odjeljenje.RazredID ?? 0,
+                NastavnikID = odjeljenje.RazrednikId ?? 0,
+                NastavniPlanId = odjeljenje.NastavniPlanId ?? 0,
+                GodinaStudiranjaId = odjeljenje.GodinaStudijaId ?? 0,
+                
+                
+            };
+
+            if (raspored!=null)
+            {
+                odjeljenjeUredi.RasporedId = raspored.RasporedID;
             }
 
-            odjeljenjeUredi.Predstavnik = ucenici.Select(x => new SelectListItem
-            { Value = x.KorisnikId.ToString(), Text = x.Ime + " " + x.Prezime }).ToList();
 
 
-
-
-            return View(odjeljenjeUredi);
+            return View(GetDefaultVM(odjeljenjeUredi));
         }
 
 
         private OdjenjenjeVM GetDefaultVM(OdjenjenjeVM vm)
         {
+            if (vm.Oznaka == null) {
 
-            if (vm.Odjejlenje == null)
-                vm.Odjejlenje = new Odjeljenje();
+                vm.Oznaka = "";
+            }
 
-            if(vm.Razrednik==null)
+            if (vm.Predstavnik == null && vm.OdjeljenjeID!=0) {
+
+                var uceniciOdjeljenja = from x in _context._UpisUOdjeljenje
+                                        join p in _context._Ucenik on x.UcenikId equals p.KorisnikId
+                                        where x.OdjeljenjeId==vm.OdjeljenjeID
+                                        select new { p.KorisnikId, p.Prezime, p.Ime };
+
+
+                vm.Predstavnik = uceniciOdjeljenja.Select(x => new SelectListItem
+                { Value = x.KorisnikId.ToString(), Text = x.Ime + " " + x.Prezime }).ToList();
+            }
+
+
+
+            if (vm.Razrednik==null)
             vm.Razrednik = _context._Nastavnik.Select(x => new SelectListItem
             {
                 Value = x.KorisnikId.ToString(),
@@ -141,7 +236,17 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
                     Value = x.GodinaStudijaId.ToString(),
                     Text = x.Godina
                 }).ToList();
-            }            
+            }
+
+            if (vm.BrojRazreda==null)
+            {
+                vm.BrojRazreda = _context.Razred.Select(x => new SelectListItem
+                {
+                    Value = x.RazredId.ToString(),
+                    Text = x.OpisRazreda
+                }
+                ).ToList();
+            }
             return vm;
         }
 
@@ -149,8 +254,25 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
         [HttpPost]
         public IActionResult Snimi(OdjenjenjeVM vm )
         {
+            if (!ModelState.IsValid)
+            {
+                return View("DodajOdjeljenje", GetDefaultVM(vm));
+            }
+
+
+
+            Odjeljenje novoOdljeljenje = new Odjeljenje {
+
+                Oznaka=vm.Oznaka,
+                Kapacitet=vm.Kapacitet,
+                RazredID = vm.RazredID,
+                RazrednikId =vm.NastavnikID,
+                NastavniPlanId=vm.NastavniPlanId,
+                GodinaStudijaId=vm.GodinaStudiranjaId
+
+            };
            
-            _context._Odjeljenje.Add(vm.Odjejlenje);
+            _context._Odjeljenje.Add(novoOdljeljenje);
             _context.SaveChanges();
 
 
@@ -170,6 +292,256 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             _context._Odjeljenje.Remove(_context._Odjeljenje.Find(OdjeljenjeID));
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
+        }
+
+
+        public IActionResult DodajUOdjeljenje(int OdljenjenjeID)
+        {
+            UcenikOdjeljenje ucenik = new UcenikOdjeljenje();
+
+            ucenik.Ucenik = _context._Ucenik.Select(x => new SelectListItem
+            {
+                Value = x.KorisnikId.ToString(),
+                Text = x.Prezime + " " + x.Ime
+            }).ToList();
+
+
+            //ucenik.Ucenik = _context._Ucenik.ToList();
+
+
+            Odjeljenje odabirOdljenjenje = _context._Odjeljenje.FirstOrDefault(x => x.OdjeljenjeId == OdljenjenjeID);
+            if (odabirOdljenjenje != null) {
+
+                ucenik.OdjeljenjeId = odabirOdljenjenje.OdjeljenjeId;
+                ucenik.Oznaka = odabirOdljenjenje.Oznaka;
+            }
+            
+
+
+
+            return PartialView(ucenik);
+        }
+
+
+        [HttpPost]
+        public IActionResult SnimiOdjeljenje(UcenikOdjeljenje vm)
+        {
+
+
+
+            UpisUOdjeljenje noviUpis = new UpisUOdjeljenje
+            {
+                BrojUDnevniku = vm.BrojUdnevniku,
+                OdjeljenjeId = vm.OdjeljenjeId,
+                UcenikId = vm.UcenikId
+
+            };
+
+
+
+            _context._UpisUOdjeljenje.Add(noviUpis);
+            _context.SaveChanges();
+
+            List<UpisUOdjeljenje> listaUcenika = _context._UpisUOdjeljenje.Where(x => x.OdjeljenjeId == vm.OdjeljenjeId).Include(x => x.Ucenik).ToList();
+            
+
+            int brojac = 1;
+
+            foreach (var ucenik in listaUcenika)
+            {
+                ucenik.BrojUDnevniku = brojac;
+                brojac++;
+            }
+
+            brojac = 1;
+
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        public IActionResult PrebaciUOdljeljenje(int OdjeljenjeID) {
+
+            //Zelimo da prebacimo ucenike iz nizeg odjeljenja u vise odljeljenje
+            //Administrator cec imati mogucnost da bira iz kojeg odljenja tako da se oznake nece poreditit(jest da sam mogo i to napravit)
+            //Treba napravit listu odjeljenja za jedan manji razred od tog odljenja
+            //Ovo bi se trabalo samo desavati odjeljenjima od 6 do 8 do odjeljenja koja su peti razred trebali bi imat mogucnost u upis odjeljenja
+            //samo
+            //Npravili smo bool prebacen tako kad se radnja odradit ta value se mjenja te to odljenje se brise iz liste 
+
+
+            var odjeljenje = _context._Odjeljenje.First(x => x.OdjeljenjeId == OdjeljenjeID);
+
+            var Odjeljenja = _context._Odjeljenje.Where(x => x.GodinaStudijaId == odjeljenje.GodinaStudijaId - 1 && x.RazredID == odjeljenje.RazredID - 1 && x.Prebacen == false).ToList();
+
+            OdjeljenjePrebaciVM prebacit = new OdjeljenjePrebaciVM {
+
+                OdjeljenjeID= OdjeljenjeID,
+                Oznaka=odjeljenje.Oznaka,
+
+                Odjeljenja=Odjeljenja.Select(x=>new SelectListItem {
+
+                    Value=x.OdjeljenjeId.ToString(),
+                    Text=x.Oznaka
+
+                }).ToList()
+
+            };
+
+
+            return View(prebacit);
+
+        }
+
+
+        public IActionResult SnimiPrebaceno(OdjeljenjePrebaciVM vm) {
+
+            if (!ModelState.IsValid)
+            {
+                var odjeljenje = _context._Odjeljenje.First(x => x.OdjeljenjeId ==vm.OdjeljenjeID);
+
+                var Odjeljenja = _context._Odjeljenje.Where(x => x.GodinaStudijaId == odjeljenje.GodinaStudijaId - 1 && x.RazredID == odjeljenje.RazredID - 1 && x.Prebacen == false).ToList();
+                vm.Odjeljenja = Odjeljenja.Select(x => new SelectListItem
+                {
+
+                    Value = x.OdjeljenjeId.ToString(),
+                    Text = x.Oznaka
+
+                }).ToList();
+
+                return View("PrebaciUOdljeljenje", vm);
+            }
+
+            var staroOdjeljenje = _context._Odjeljenje.FirstOrDefault(x=>x.OdjeljenjeId==vm.OdabranoOdljeljenjeID);
+
+            staroOdjeljenje.Prebacen = true;
+            _context.Update(staroOdjeljenje);
+
+
+            var Ucenici = from x in _context._UpisUOdjeljenje
+                          where x.OdjeljenjeId == vm.OdabranoOdljeljenjeID
+                          select new {x.UcenikId,x.BrojUDnevniku };
+
+
+            int brojac = 0;
+
+            foreach (var ucenik in Ucenici)
+            {
+                if (brojac < _context._Odjeljenje.First(x => x.OdjeljenjeId == vm.OdjeljenjeID).Kapacitet)
+                {
+                    UpisUOdjeljenje noviUpis = new UpisUOdjeljenje
+                    {
+                        UcenikId = ucenik.UcenikId,
+                        OdjeljenjeId = vm.OdjeljenjeID,
+                        BrojUDnevniku = ucenik.BrojUDnevniku
+                    };
+
+                    _context._UpisUOdjeljenje.Add(noviUpis);
+
+                    brojac++;
+                }
+            }
+
+            _context.SaveChanges();
+
+
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        public IActionResult ProvjeriKapacitet(int OdjeljenjeID,int OdabranoOdljeljenjeID) {
+
+            int Kapacitet = _context._Odjeljenje.First(x => x.OdjeljenjeId == OdjeljenjeID).Kapacitet;
+            int brojUcenikaUpisanih = _context._UpisUOdjeljenje.Where(x => x.OdjeljenjeId == OdjeljenjeID).Count();
+
+            if (OdabranoOdljeljenjeID != 0)
+            {
+                int brojUpisanih= _context._UpisUOdjeljenje.Where(x => x.OdjeljenjeId == OdabranoOdljeljenjeID).Count();
+                int provjera = brojUcenikaUpisanih + brojUpisanih;
+
+                if (provjera > Kapacitet)
+                    return Json("Nije moguce prebaciti odbabrano odjeljenje.Prebacivanjem ucenika precice se maksimalni kapacitet!");
+            }
+
+            if (brojUcenikaUpisanih < Kapacitet) { return Json(true); }
+
+            return Json("Dosegnut maximalni kapacitet ucenika!");
+
+        }
+
+
+        public IActionResult ProvjeriOznaku(string Oznaka, int GodinaStudiranjaId, int OdjeljenjeID)
+        {
+
+            //Posalje mi se oznaka 5-a i odljenje 2 iz Uredi
+            //Ja uzmem to odjeljenje i njegovu oznaku u provjerim sa oznakom 5-a
+            //Ako je isto onad je sve OK ako je razlicito samo pusti dalje da odradi kod
+
+            if (OdjeljenjeID != 0) {
+
+                var odjeljenjeProvjera = _context._Odjeljenje.FirstOrDefault(x =>x.OdjeljenjeId== OdjeljenjeID);
+                bool provjera = odjeljenjeProvjera.Oznaka.Equals(Oznaka);
+                if (provjera) {
+                    return Json(true);
+                }
+
+            }
+
+            var odjeljenje = _context._Odjeljenje.FirstOrDefault(x => x.Oznaka == Oznaka && x.GodinaStudijaId == GodinaStudiranjaId);
+
+            if (odjeljenje != null)
+            {
+
+                return Json($"Napisana oznaka se vec koristu u toj skolokoj godini");
+            }
+
+            return Json(true);
+        }
+
+        public IActionResult ProvjeriRazrednika(int NastavnikID, int GodinaStudiranjaId,int OdjeljenjeID) {
+
+            if (OdjeljenjeID !=0)
+            {
+
+                var odjeljenjeProvjera = _context._Odjeljenje.FirstOrDefault(x => x.OdjeljenjeId == OdjeljenjeID);
+                if (odjeljenjeProvjera.RazrednikId==NastavnikID)
+                {
+                    return Json(true);
+                }
+
+            }
+
+            var odjeljenje = _context._Odjeljenje.FirstOrDefault(x => x.RazrednikId == NastavnikID && x.GodinaStudijaId == GodinaStudiranjaId);
+
+            if (odjeljenje != null)
+            {
+
+                return Json($"Odabrani nastavnik je vec razrednik u toj skolskoj godini!");
+            }
+
+            return Json(true);
+        }
+
+        public IActionResult ProvjeriRazred(int RazredID, string Oznaka)
+        {
+
+            if (String.IsNullOrEmpty(Oznaka)) {
+                return Json($"Razred i oznaka se ne podudaraju");
+            };
+
+            var razred = _context.Razred.FirstOrDefault(x => x.RazredId == RazredID);
+            string nesto = Oznaka.Substring(0, 1);
+            bool provjera = nesto.Equals(razred.BrojRazreda.ToString());
+
+
+            if (!provjera)
+            {
+
+                return Json($"Razred i oznaka se odjeljenja se ne pododaraju!");
+            }
+
+            return Json(true);
         }
 
 

@@ -3,30 +3,65 @@
     ViewData["Title"] = "Detalji";
 }
 
-<h2>Detalji</h2>
+<div class="container text-left" style="margin:10px">
+    <a asp-action="PrebaciUOdljeljenje" asp-route-OdjeljenjeID="@Model.OdjeljenjeID" class="btn btn-danger" style="margin:5px">Prebaci ucenike!</a>
+
+    @if (Model.RasporedId != null)
+    {
+        <button type="button" title="Dodaj" class="btn btn-info" data-toggle="ajax-modal" data-target="#rasporedPregled"
+                data-url="@Url.Action("CitavRaspored","Raspored",new {RasporedID=Model.RasporedId })" style="margin:5px">
+            Pregled
+        </button>
+
+        <a asp-action="UrediRaspored" asp-controller="Raspored" asp-route-id="@Model.RasporedId" class="btn btn-info" style="margin:5px">Uredi</a>
+    }
+    else
+    {
+        <button type="button" title="Dodaj" class="btn btn-info" data-toggle="ajax-modal" data-target="#rasporedPregled"
+                data-url="@Url.Action("DodajRaspored","Raspored",new {OdjeljenjeId=Model.OdjeljenjeID })" style="margin:5px">
+            Dodaj raspored
+        </button>
+    }
+</div>
 
 <form>
     <div class="form-row">
         <div class="form-group col-md-6">
-            <label asp-for="Odjejlenje.Oznaka">Razred:</label>
-            <input asp-for="Odjejlenje.Oznaka" readonly class="form-control" />
+            <label asp-for=" Oznaka">Razred:</label>
+            <input asp-for=" Oznaka" readonly class="form-control" />
         </div>
 
         <div class="form-group col-md-6">
             @foreach (var item in Model.Razrednik)
             {
-                if (Model.Odjejlenje.RazrednikId.ToString() == item.Value)
+                if (Model.NastavnikID.ToString() == item.Value)
                 {
-                    <label asp-for="Odjejlenje.Razrednik">Razrednik:</label>
+                    <label asp-for=" Razrednik">Razrednik:</label>
                     <input asp-for="@item.Text" readonly class="form-control" />
 
                 }
             }
         </div>
+
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="Odjejlenje.Kapacitet">Kapacitet:</label>
-                <input asp-for="Odjejlenje.Kapacitet" readonly class="form-control" />
+
+                @foreach (var item in Model.GodinaStudiranja)
+                {
+                    if (Model.GodinaStudiranjaId.ToString() == item.Value)
+                    {
+                        <label asp-for=" GodinaStudiranja">Razrednik:</label>
+                        <input asp-for="@item.Text" readonly class="form-control" />
+
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for=" Kapacitet">Kapacitet:</label>
+                <input asp-for=" Kapacitet" readonly class="form-control" />
             </div>
         </div>
 
@@ -35,9 +70,9 @@
         <div class="form-group col-md-6">
             @foreach (var item in Model.Predstavnik)
             {
-                if (Model.Odjejlenje.UcenikID.ToString() == item.Value)
+                if (Model.UcenikID.ToString() == item.Value)
                 {
-                    <label asp-for="Odjejlenje.Ucenik">Predstavnik:</label>
+                    <label asp-for="Predstavnik">Predstavnik:</label>
                     <input asp-for="@item.Text" readonly class="form-control" />
 
                 }
@@ -45,7 +80,9 @@
         </div>
     </div>
 </form>
-<div id="tabelaUcenika">
+
+
+<div id="tabelaUcenika" data-table="ajaxDiv">
 
 </div>
 
@@ -57,14 +94,12 @@
 <script>
     $(document).ready(function (parametars) {
 
-        $.get("@Url.Action("Index", "AjaxOdjeljenje", new { odjeljenjeId = Model.Odjejlenje.OdjeljenjeId })", function (rezultat, status) {
+        $.get("@Url.Action("Index", "AjaxOdjeljenje", new { odjeljenjeId = Model.OdjeljenjeID })", function (rezultat, status) {
 
             $("#tabelaUcenika").html(rezultat);
         });
 
     });
-
-   
 
 </script>
 

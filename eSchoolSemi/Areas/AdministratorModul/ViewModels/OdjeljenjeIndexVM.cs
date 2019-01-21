@@ -8,7 +8,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
     public class OdjeljenjeIndexVM
     {
 
-        public List<Row> Odjeljenja { get; set; }
+        public IQueryable<Row> Odjeljenja { get; set; }
 
         public class Row {
 

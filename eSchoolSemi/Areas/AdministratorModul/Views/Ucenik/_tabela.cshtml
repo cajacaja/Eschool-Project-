@@ -2,6 +2,8 @@
 
 
 
+
+<br />
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -53,14 +55,15 @@
     $("#OrderDugme").click(function (parametars) {
 
         var searchString = $("#ucenikValue").val();
-        var Url="/AdministratorModul/Ucenik/_tabela/?search=" +searchString+"&&sortOrder="+"@ViewData["NameSortParm"]"+"&&page=@Model.PageIndex";
+        var Url = "/AdministratorModul/Ucenik/_tabela/?sortOrder=" + "@ViewData["NameSortParm"]" + "&&searchString=" + searchString+"&&page=@(Model.PageIndex)";
+        console.log(Url);
 
         $.get(Url, function (rezultat, status) {
 
             $("#test").html(rezultat);
         });
 
-        
+
     });
 
 
@@ -68,7 +71,18 @@
     $("#Nazad").click(function (parametars) {
 
         var searchString = $("#ucenikValue").val();
-        var Url="/AdministratorModul/Ucenik/_tabela/?search=" +searchString+"&&page=@(Model.PageIndex-1)";
+        var Url ="/AdministratorModul/Ucenik/_tabela/?searchString=" +searchString+"&&page=@(Model.PageIndex-1)";
+        $.get(Url, function (rezultat, status) {
+
+            $("#test").html(rezultat);
+        });
+    });
+
+
+    $("#Naprijed").click(function (parametars) {
+
+        var searchString = $("#ucenikValue").val();
+        var Url ="/AdministratorModul/Ucenik/_tabela/?searchString=" +searchString+"&&page=@(Model.PageIndex+1)";
         $.get(Url, function (rezultat, status) {
 
             $("#test").html(rezultat);
@@ -76,14 +90,22 @@
     });
 
     
-    $("#Naprijed").click(function (parametars) {
+
+    $("#odjeljenjeProv").click(function (parametars) {
 
         var searchString = $("#ucenikValue").val();
-        var Url="/AdministratorModul/Ucenik/_tabela/?search=" +searchString+"&&page=@(Model.PageIndex+1)";
+        var Url = "/AdministratorModul/Ucenik/_tabela/?provjera=" + "DA" +"&&searchString=" +searchString;
+        console.log(Url);
+
+
         $.get(Url, function (rezultat, status) {
 
             $("#test").html(rezultat);
         });
+
+
+
+
     });
 
 
@@ -120,7 +142,7 @@
             $.get(url).done(function (data) {
 
                 placeholder.html(data);
-                
+
             });
         });
     });

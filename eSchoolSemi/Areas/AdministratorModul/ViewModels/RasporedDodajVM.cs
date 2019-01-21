@@ -12,8 +12,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
 
         public int OdljenjeID { get; set; }
 
-        //Mozda provjerit imal vec raspored uradjen za neko odjeljenje
-        public IEnumerable<SelectListItem> Odjeljenja { get; set; }
+        public string Oznaka { get; set; }
 
 
     }

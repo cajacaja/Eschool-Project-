@@ -44,7 +44,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
 
         [Phone]
         [Required(ErrorMessage = "Ovo polje nesmije biti prazno!")]
-        [Remote("ProvjeriTelefon", "RoditeljController", "AdministratorModul")]
+        [Remote("ProvjeriTelefon",controller: "Ucenik")]
         public string Telefon { get; set; }
 
         [Remote(action: "ProvjeriUsername", controller: "Ucenik")]

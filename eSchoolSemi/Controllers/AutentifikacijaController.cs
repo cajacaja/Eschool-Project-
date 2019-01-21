@@ -20,6 +20,7 @@ namespace eSchoolSemi.Web.Controllers
        
         public IActionResult Index()
         {
+           
             return View(new LoginVM()
             {
                 ZapamtiPassword = true,

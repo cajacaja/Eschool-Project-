@@ -45,7 +45,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             if (!String.IsNullOrEmpty(search))
             {
 
-                ListRoditelja = ListRoditelja.Where(x => x.Prezime.Contains(search) || x.Ime.Contains(search));
+                ListRoditelja = ListRoditelja.Where(x => (x.Ime +" "+ x.Prezime).Contains(search) || (x.Prezime + " " + x.Ime).Contains(search));
             }
 
             switch (sortOrder)
@@ -63,6 +63,8 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.Controllers
             return PartialView(await PaginatedList<Roditelj>.CreateAsync(ListRoditelja.AsNoTracking(), page ?? 1, pageSize));
 
         }
+
+       
 
         #region DodavanjeRoditelja
         public IActionResult DodajRoditelja()

@@ -10,6 +10,12 @@ namespace eSchool.Data.Models
     {
         [Key]
         public int OdjeljenjeId { get; set; }
+
+        public int? RazredID { get; set; }
+        public Razred Razred { get; set; }
+
+        public bool Prebacen { get; set; }
+
         public string Oznaka { get; set; }
         public int Kapacitet { get; set; }
 

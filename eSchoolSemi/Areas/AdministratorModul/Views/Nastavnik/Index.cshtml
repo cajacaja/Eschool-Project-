@@ -4,6 +4,7 @@
 }
 
 
+
 <div>
 
     <div class="container-fluid">
@@ -28,8 +29,10 @@
 
         <div class="col-sm-2">
 
-            <button type="button" title="Dodaj" class="btn btn-info" data-toggle="ajax-modal" data-target="#dodajRoditelj" 
-                                            data-url="@Url.Action("DodajNastavnika","Nastavnik")">Dodaj nastavnika!</button>
+            <button type="button" title="Dodaj" class="btn btn-info" data-toggle="ajax-modal" data-target="#dodajRoditelj"
+                    data-url="@Url.Action("DodajNastavnika","Nastavnik")">
+                Dodaj nastavnika!
+            </button>
         </div>
 
 
@@ -40,7 +43,7 @@
 
 
 
-<div id="tabelaN">
+<div id="tabelaN" data-table="ajaxDiv">
 
 </div>
 
@@ -59,6 +62,26 @@
         });
     });
 
+    $("#nastavnikValue").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "@Url.Action("nazivNastavnika", "Nastavnik")",
+                type: "POST",
+                dataType: "json",
+                data: { Prefix: request.term },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.text, value: item.text };
+                    }))
+
+                }
+            })
+        }, error: function (xhr, status, error) {
+            alert("Error");
+        },
+        minLength: 2
+    });
+
      $("#dugmeID").click(function (parametars) {
 
          var searchString = $("#nastavnikValue").val();
@@ -75,5 +98,5 @@
 
     });
 
-   
+
 </script>

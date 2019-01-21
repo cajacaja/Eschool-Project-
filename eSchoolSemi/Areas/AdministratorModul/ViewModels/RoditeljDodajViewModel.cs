@@ -33,7 +33,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
 
         [Phone]
         [Required(ErrorMessage = "Telefon ne smije biti prazan!")]
-        [Remote("ProvjeriTelefon", "RoditeljController", "AdministratorModul")]
+        [Remote(action: "ProvjeriTelefon", controller: "Ucenik")]
         public string Telefon { get; set; }
 
         [Remote(action: "ProvjeriUsername", controller: "Ucenik")]

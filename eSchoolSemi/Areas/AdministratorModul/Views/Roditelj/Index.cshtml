@@ -5,6 +5,8 @@
 
 }
 
+
+
 <div class="container-fluid">
     <div class="row">
         <div class="form-group">
@@ -27,6 +29,7 @@
         <div class="col-sm-2">
 
             <button type="button" title="Dodaj" class="btn btn-info" data-toggle="ajax-modal" data-target="#dodajRoditelj" data-url="@Url.Action("DodajRoditelja","Roditelj")">Dodaj roditelj!</button>
+            
         </div>
 
 
@@ -37,7 +40,7 @@
 
 
 
-<div id="tabelaID"></div>
+<div id="tabelaID" data-table="ajaxDiv"></div>
 <div id="modalRoditelj"></div>
 <script>
     $(document).ready(function (parametars) {
@@ -47,7 +50,30 @@
                 $("#tabelaID").html(result);
             }
         });
+
+
+        $("#roditeljValue").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "@Url.Action("nazivRoditelja", "Ucenik")",
+                type: "POST",
+                dataType: "json",
+                data: { Prefix: request.term },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.text, value: item.text };
+                    }))
+
+                }
+            })
+        }, error: function (xhr, status, error) {
+            alert("Error");
+        },
+        minLength: 2
     });
+    });
+
+    
 
     $("#dugmeID").click(function (parametars) {
 
@@ -63,6 +89,6 @@
 
     });
 
-    
+
 
 </script>

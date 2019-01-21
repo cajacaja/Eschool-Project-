@@ -25,7 +25,7 @@ namespace eSchoolSemi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MojContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("fit-server1")));
+               options.UseSqlServer(Configuration.GetConnectionString("lokalni1")));
             services.AddMvc();
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession();

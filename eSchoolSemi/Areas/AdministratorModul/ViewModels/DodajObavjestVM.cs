@@ -10,6 +10,8 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
     public class DodajObavjestVM
     {
 
+        public int ObavjestID { get; set; }
+
         public int? NastavniPlanID { get; set; }
         public List<SelectListItem> NastavniPlanovi { get; set; }
 
@@ -19,6 +21,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
         [StringLength(50)]
         public string Naslov { get; set; }
 
+        
         public string Sadrzaj { get; set; }
     }
 }

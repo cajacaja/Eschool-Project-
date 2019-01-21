@@ -22,7 +22,10 @@
                 <td>@ucenik.ImePrezimeUcenika</td>
                 <td><button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#add-contact" data-url="@Url.Action("DetaljiUcenik", "AjaxOdjeljenje", new { UcenikId = ucenik.UcenikID })">
     Detalji
-</button></td>
+</button>
+                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#promjeniOdjeljenje" data-url="@Url.Action("PromjeniOdjeljenje", "AjaxOdjeljenje", new { OdjeljenjeId =Model.OdjeljenjeID,UcenikId=ucenik.UcenikID})">
+                       Prebaci
+                    </button>
             </tr>
         }
     </tbody>

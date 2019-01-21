@@ -5,36 +5,57 @@
 
 <h2>Uredi</h2>
 
-<form asp-action="SnimiUredjeno" class="col-md-6">
+<form asp-action="SnimiUredjeno" class="col-md-6" method="post">
     <div class="row">
 
+        
+            <input asp-for=" OdjeljenjeID" type="hidden" class="form-control" value="@Model.OdjeljenjeID" />
+        
         <div class="form-group">
-            <label asp-for="Odjejlenje.OdjeljenjeId"></label>
-            <input asp-for="Odjejlenje.OdjeljenjeId" readonly class="form-control" value="@Model.Odjejlenje.OdjeljenjeId" />
-        </div>
-        <div class="form-group">
-            <label asp-for="Odjejlenje.Oznaka"></label>
-            <input asp-for="Odjejlenje.Oznaka" class="form-control" value="@Model.Odjejlenje.Oznaka" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Odjejlenje.Kapacitet"></label>
-            <input asp-for="Odjejlenje.Kapacitet" class="form-control" value="@Model.Odjejlenje.Oznaka" />
+            <label asp-for=" Oznaka"></label>
+            <input asp-for=" Oznaka" class="form-control" value="@Model.Oznaka" />
+            <span asp-validation-for="Oznaka" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Odjejlenje.RazrednikId"></label>
-            <select asp-for="Odjejlenje.RazrednikId" asp-items="@Model.Razrednik" class="form-control"></select>
+            <label asp-for=" Kapacitet"></label>
+            <input asp-for=" Kapacitet" class="form-control" value="@Model.Kapacitet" />
         </div>
 
         <div class="form-group">
-            <label asp-for="Odjejlenje.UcenikID"></label>
-            <select asp-for="Odjejlenje.UcenikID" asp-items="@Model.Predstavnik" class="form-control"></select>
+            <label asp-for="NastavnikID"></label>
+            <select asp-for="NastavnikID" asp-items="@Model.Razrednik" class="form-control">
+                <option value="@Model.NastavnikID" selected></option>
+            </select>
+            <span asp-validation-for="Oznaka" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Odjejlenje.NastavniPlanId">Nastavni plan</label>
-            <select asp-for="Odjejlenje.NastavniPlanId" asp-items="@Model.NastavniPlan" class="form-control"></select>
+            <label asp-for="UcenikID"></label>
+            <select asp-for="UcenikID" asp-items="@Model.Predstavnik" class="form-control">      
+                <option></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="RazredID"></label>
+            <select asp-for="RazredID" asp-items="@Model.BrojRazreda" class="form-control">
+                <option value="@Model.RazredID" selected></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="GodinaStudiranjaId"></label>
+            <select asp-for="GodinaStudiranjaId" asp-items="@Model.GodinaStudiranja" class="form-control">
+                <option value="@Model.GodinaStudiranjaId" selected></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for=" NastavniPlanId">Nastavni plan</label>
+            <select asp-for=" NastavniPlanId" asp-items="@Model.NastavniPlan" class="form-control">
+                <option value="@Model.NastavniPlanId" selected></option>
+            </select>
         </div>
 
     </div>

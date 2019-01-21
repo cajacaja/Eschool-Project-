@@ -7,6 +7,7 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
 {
     public class AjaxPrikazVM
     {
+        public int OdjeljenjeID { get; set; }
 
         public IEnumerable<Row> Ucenici { get; set; }
 

@@ -3,7 +3,8 @@
     ViewData["Title"] = "RoditeljDodaj";
 }
 
-
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.16.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
 
 <div class="modal fade" id="dodajRoditelj" tabindex="-1" role="dialog" aria-labelledby="dodajRoditelj" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -46,10 +47,10 @@
                             <label asp-for="GradID">Grad:</label>
                             <select asp-for="GradID" class="form-control">
                                 @foreach (var o in Model.Gradovi)
-            {
+                                {
 
-                    <option value="@o.Value">@o.Text</option>
-}
+                                    <option value="@o.Value">@o.Text</option>
+                                }
                             </select>
 
                             <div class="form-group">
@@ -78,47 +79,11 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-save="modal">Save</button>
+                <button type="button" class="btn btn-primary" data-save="modal" data-url="@Url.Action("tabelaRoditelji","Roditelj")">Save</button>
 
             </div>
         </div>
     </div>
 </div>
 
-
-<script>
-     $(function () {
-
-            $('button[data-save="modal"]').click(function (event) {
-
-                event.preventDefault();
-                var form = $(this).parents('.modal').find('form');
-                var actionUrl = form.attr("action");
-
-                var dataToSend = new FormData(form.get(0));
-
-                $.ajax({ url: actionUrl, method: 'post', data: dataToSend, processData: false, contentType: false }).
-                    done(function (data) {
-                        var newBody = $('.modal-body', data);
-                        $("#dodajRoditelj").find('.modal-body').replaceWith(newBody);
-
-                        if (newBody.find('[name="IsValid"]').val()!="False") {
-
-                            $('.modal').modal('hide');
-
-                            $.ajax({
-                                 url: "@Url.Action("tabelaRoditelji","Roditelj")", success: function (result) {
-                                     $("#tabelaID").html(result);
-                                    }
-                                 });
-                        }
-
-                    });
-
-
-
-
-            });
-
-        });
-</script>
+<script src="~/js/ajaxModal.js"></script>

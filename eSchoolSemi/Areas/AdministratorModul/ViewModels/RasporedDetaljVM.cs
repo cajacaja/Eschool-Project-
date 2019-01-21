@@ -10,6 +10,8 @@ namespace eSchoolSemi.Web.Areas.AdministratorModul.ViewModels
     {
         public int RasporedID { get; set; }
 
+        public int OdjeljenjeId { get; set; }
+
         public int PredmetId { get; set; }
         public List<SelectListItem> Predmet { get; set; }
 
